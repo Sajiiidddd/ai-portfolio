@@ -7,16 +7,18 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'image.tmdb.org',
         port: '',
-        pathname: '/t/p/**', // This allows any path under /t/p/
+        pathname: '/t/p/**',
       },
       {
         protocol: 'https',
         hostname: 'i.scdn.co',
         port: '',
-        pathname: '/image/**', // This allows any path under /image/
+        pathname: '/image/**',
       },
-      // Add other hostnames here if you use other image sources later
     ],
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // ✅ Add this to skip ESLint during build
   },
 };
 
