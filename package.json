@@ -40,4 +40,5 @@
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\",\"moduleResolution\":\"node\"} prisma/seed.ts"
   }
+  
 }
