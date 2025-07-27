@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  @apply bg-black text-white font-sans antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+.bg-noise {
+  background-image: url('/textures/noise.png');
+  opacity: 0.04;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+
