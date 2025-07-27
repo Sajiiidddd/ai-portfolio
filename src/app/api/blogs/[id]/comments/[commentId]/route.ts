@@ -3,8 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 const getCurrentUserId = () => 'anonymous-temp';
 
-export async function DELETE(_: NextRequest, context: { params: { commentId: string } }) {
-  const { params } = await Promise.resolve(context); // ✅ Avoids warning
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { commentId: string } }
+) {
   const commentId = params.commentId;
   const currentUserId = getCurrentUserId();
 
@@ -18,8 +20,10 @@ export async function DELETE(_: NextRequest, context: { params: { commentId: str
   return NextResponse.json({ message: 'Comment deleted' });
 }
 
-export async function PATCH(req: NextRequest, context: { params: { commentId: string } }) {
-  const { params } = await Promise.resolve(context); // ✅ Avoids warning
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { commentId: string } }
+) {
   const commentId = params.commentId;
   const { content } = await req.json();
   const currentUserId = getCurrentUserId();
