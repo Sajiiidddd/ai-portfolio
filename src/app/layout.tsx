@@ -8,10 +8,9 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
 
 export const metadata = {
-  title: 'Sajid Tamboli | AI x Web3 Developer',
-  description: 'Portfolio inspired by Studio Yoke — Minimal, Elegant, Functional.',
+  title: 'Sajid Tamboli | AI Jedi',
+  description: 'A sleek portfolio crafted for intelligent design.',
 }
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
