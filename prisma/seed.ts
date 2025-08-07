@@ -7,11 +7,21 @@ const slugify = (text: string) =>
   text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 async function main() {
-  // Clear existing data (optional during dev reseeds)
+  // Clear existing data (during dev only)
   await prisma.vote.deleteMany();
   await prisma.comment.deleteMany();
   await prisma.blog.deleteMany();
+  await prisma.user.deleteMany(); // Clean users
 
+  // 1. Create a test user
+  const user = await prisma.user.create({
+    data: {
+      email: 'sajid@example.com',
+      name: 'Sajid',
+    },
+  });
+
+    // 2. Create a blog
   const colabBlog = await prisma.blog.create({
     data: {
       title: "The Google Colab Survival Guide",
@@ -22,7 +32,27 @@ async function main() {
     },
   });
 
-  console.log("✅ Seeded your blog:", colabBlog.slug);
+  // 3. Optional: Add a comment
+  await prisma.comment.create({
+    data: {
+      author: user.name!,
+      content: "This was super helpful — the checkpointing idea saved me!",
+      userId: user.id,
+      blogId: colabBlog.id,
+    },
+  });
+
+  // 4. Optional: Add an upvote
+  await prisma.vote.create({
+    data: {
+      blogId: colabBlog.id,
+      userId: user.id,
+      type: 'UPVOTE',
+    },
+  });
+
+  console.log("✅ Seeded blog:", colabBlog.slug);
+  console.log("👤 With user:", user.email);
 }
 
 main()
@@ -31,7 +61,6 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
-
 
 
 

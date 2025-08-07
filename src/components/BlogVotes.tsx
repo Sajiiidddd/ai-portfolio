@@ -10,43 +10,77 @@ interface BlogVotesProps {
   downvotes: number;
 }
 
+type VoteType = 'UPVOTE' | 'DOWNVOTE';
+type LocalVoteType = 'upvote' | 'downvote';
+
 export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps) {
   const [votes, setVotes] = useState({ upvotes, downvotes });
   const [selected, setSelected] = useState<'up' | 'down' | null>(null);
   const [total, setTotal] = useState(upvotes - downvotes);
 
+  // Fetch the current user's vote when component mounts
   useEffect(() => {
     const fetchUserVote = async () => {
-      const res = await fetch(`/api/blogs/${blogId}/votes`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.voteType === 'UPVOTE') setSelected('up');
-        else if (data.voteType === 'DOWNVOTE') setSelected('down');
+      try {
+        const res = await fetch(`/api/blogs/${blogId}/votes`, {
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.voteType === 'UPVOTE') setSelected('up');
+          else if (data.voteType === 'DOWNVOTE') setSelected('down');
+
+          if (typeof data.upvotes === 'number' && typeof data.downvotes === 'number') {
+            setVotes({ upvotes: data.upvotes, downvotes: data.downvotes });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch user vote', err);
       }
     };
+
     fetchUserVote();
   }, [blogId]);
 
+  // Update total when vote counts change
   useEffect(() => {
     setTotal(votes.upvotes - votes.downvotes);
   }, [votes]);
 
-  const handleVote = async (voteType: 'upvote' | 'downvote') => {
-    const unvote = (selected === 'up' && voteType === 'upvote') || (selected === 'down' && voteType === 'downvote');
+  const handleVote = async (voteType: LocalVoteType) => {
+    const backendVoteType: VoteType = voteType === 'upvote' ? 'UPVOTE' : 'DOWNVOTE';
+    const isUnvote = (selected === 'up' && voteType === 'upvote') || (selected === 'down' && voteType === 'downvote');
 
-    const res = await fetch(`/api/blogs/${blogId}/votes`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ voteType: unvote ? 'unvote' : voteType }),
-    });
-
-    if (res.ok) {
-      const updated = await res.json();
-      setVotes({
-        upvotes: updated.upvotes,
-        downvotes: updated.downvotes,
+    try {
+      const res = await fetch(`/api/blogs/${blogId}/votes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ voteType: backendVoteType }),
       });
-      setSelected(unvote ? null : voteType === 'upvote' ? 'up' : 'down');
+
+      if (res.ok) {
+        const updated = await res.json();
+
+        if (typeof updated.upvotes === 'number' && typeof updated.downvotes === 'number') {
+          setVotes({
+            upvotes: updated.upvotes,
+            downvotes: updated.downvotes,
+          });
+        }
+
+        // Always update selection based on backend message
+        if (updated.message?.toLowerCase().includes('deleted')) {
+          setSelected(null);
+        } else if (backendVoteType === 'UPVOTE') {
+          setSelected('up');
+        } else if (backendVoteType === 'DOWNVOTE') {
+          setSelected('down');
+        }
+      }
+    } catch (err) {
+      console.error('Vote error:', err);
     }
   };
 
@@ -54,14 +88,14 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
     default: { scale: 1, y: 0 },
     active: {
       scale: 1.1,
-      y: 0,
+      y: -2,
       transition: { type: 'spring', stiffness: 300 },
     },
   };
 
   return (
     <div className="flex items-center gap-2 mt-6 self-start text-white">
-      {/* Upvote */}
+      {/* Upvote Button */}
       <motion.button
         onClick={() => handleVote('upvote')}
         whileTap={{ scale: 0.9 }}
@@ -83,7 +117,7 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
         </motion.svg>
       </motion.button>
 
-      {/* Total */}
+      {/* Vote Total */}
       <div className="h-6 w-10 flex justify-center items-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.span
@@ -100,7 +134,7 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
         </AnimatePresence>
       </div>
 
-      {/* Downvote */}
+      {/* Downvote Button */}
       <motion.button
         onClick={() => handleVote('downvote')}
         whileTap={{ scale: 0.9 }}
