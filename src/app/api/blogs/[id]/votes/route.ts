@@ -1,43 +1,62 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { VoteType } from '@prisma/client';
+import { prisma } from "@/lib/prisma";
+import { getOrCreateUserId } from "@/lib/getUserId";
+import { NextRequest, NextResponse } from "next/server";
 
-const getCurrentUserId = () => 'anonymous-temp'; // Replace with auth logic later
+type Params = {
+  params: {
+    id: string; // blogId from the route
+  };
+};
 
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
-  const blogId = context.params.id;
-  const { type } = await req.json();
-  const userId = getCurrentUserId();
+export async function POST(req: NextRequest, { params }: Params) {
+  const blogId = params.id;
+  const { voteType } = await req.json(); // voteType: 'UPVOTE' | 'DOWNVOTE'
+  const userId = await getOrCreateUserId();
 
-  if (!['upvote', 'downvote'].includes(type)) {
-    return NextResponse.json({ error: 'Invalid vote type' }, { status: 400 });
-  }
-
-  try {
-    const updatedVote = await prisma.vote.upsert({
-      where: {
-        blogId_userId: { blogId, userId },
-      },
-      update: {
-        type: type === 'upvote' ? VoteType.UPVOTE : VoteType.DOWNVOTE,
-      },
-      create: {
+  const existingVote = await prisma.vote.findUnique({
+    where: {
+      blogId_userId: {
         blogId,
         userId,
-        type: type === 'upvote' ? VoteType.UPVOTE : VoteType.DOWNVOTE,
+      },
+    },
+  });
+
+  if (!existingVote) {
+    await prisma.vote.create({
+      data: {
+        blogId,
+        userId,
+        type: voteType,
       },
     });
-
-    const votes = await prisma.vote.findMany({ where: { blogId } });
-    const upvotes = votes.filter((v) => v.type === 'UPVOTE').length;
-    const downvotes = votes.filter((v) => v.type === 'DOWNVOTE').length;
-
-    return NextResponse.json({ upvotes, downvotes });
-  } catch (error) {
-    console.error('[POST /votes]', error);
-    return NextResponse.json({ error: 'Failed to register vote' }, { status: 500 });
+  } else if (existingVote.type !== voteType) {
+    await prisma.vote.update({
+      where: {
+        blogId_userId: {
+          blogId,
+          userId,
+        },
+      },
+      data: {
+        type: voteType,
+      },
+    });
+  } else {
+    await prisma.vote.delete({
+      where: {
+        blogId_userId: {
+          blogId,
+          userId,
+        },
+      },
+    });
   }
+
+  return NextResponse.json({ success: true });
 }
+
+
 
 
 

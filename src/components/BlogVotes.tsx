@@ -13,19 +13,31 @@ interface BlogVotesProps {
 export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps) {
   const [votes, setVotes] = useState({ upvotes, downvotes });
   const [selected, setSelected] = useState<'up' | 'down' | null>(null);
-  const [total, setTotal] = useState(Math.max(upvotes - downvotes, 0));
+  const [total, setTotal] = useState(upvotes - downvotes);
 
   useEffect(() => {
-    setTotal(Math.max(votes.upvotes - votes.downvotes, 0));
+    const fetchUserVote = async () => {
+      const res = await fetch(`/api/blogs/${blogId}/votes`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.voteType === 'UPVOTE') setSelected('up');
+        else if (data.voteType === 'DOWNVOTE') setSelected('down');
+      }
+    };
+    fetchUserVote();
+  }, [blogId]);
+
+  useEffect(() => {
+    setTotal(votes.upvotes - votes.downvotes);
   }, [votes]);
 
-  const handleVote = async (type: 'upvote' | 'downvote') => {
-    const unvote = (selected === 'up' && type === 'upvote') || (selected === 'down' && type === 'downvote');
+  const handleVote = async (voteType: 'upvote' | 'downvote') => {
+    const unvote = (selected === 'up' && voteType === 'upvote') || (selected === 'down' && voteType === 'downvote');
 
     const res = await fetch(`/api/blogs/${blogId}/votes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: unvote ? 'unvote' : type }),
+      body: JSON.stringify({ voteType: unvote ? 'unvote' : voteType }),
     });
 
     if (res.ok) {
@@ -34,18 +46,19 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
         upvotes: updated.upvotes,
         downvotes: updated.downvotes,
       });
-      setSelected(unvote ? null : type === 'upvote' ? 'up' : 'down');
+      setSelected(unvote ? null : voteType === 'upvote' ? 'up' : 'down');
     }
   };
 
   const iconVariants: Variants = {
-  default: { scale: 1, y: 0 },
-  active: {
-    scale: 1.1,
-    y: 0, // default, overridden via `custom` below
-    transition: { type: 'spring', stiffness: 300 },
-  },
-};
+    default: { scale: 1, y: 0 },
+    active: {
+      scale: 1.1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 300 },
+    },
+  };
+
   return (
     <div className="flex items-center gap-2 mt-6 self-start text-white">
       {/* Upvote */}
@@ -66,15 +79,11 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
             selected === 'up' ? 'text-gray-400' : 'text-white'
           }`}
         >
-          <path
-            d="M4 16h16L12 6 4 16z"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
+          <path d="M4 16h16L12 6 4 16z" stroke="currentColor" strokeWidth="2" />
         </motion.svg>
       </motion.button>
 
-      {/* Vote Count */}
+      {/* Total */}
       <div className="h-6 w-10 flex justify-center items-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.span
@@ -109,16 +118,13 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
             selected === 'down' ? 'text-gray-400' : 'text-white'
           }`}
         >
-          <path
-            d="M4 8h16L12 18 4 8z"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
+          <path d="M4 8h16L12 18 4 8z" stroke="currentColor" strokeWidth="2" />
         </motion.svg>
       </motion.button>
     </div>
   );
 }
+
 
 
 
