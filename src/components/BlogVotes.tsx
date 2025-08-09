@@ -80,31 +80,30 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
   const GRAY = '#9ca3af';
 
   return (
-    <div className="flex items-center gap-1 mt-6 self-start text-white select-none">
-      {/* Upvote Button */}
-      <motion.button
-        onClick={() => handleVote('upvote')}
-        whileTap={{ scale: 0.95 }}
-        title="Upvote"
-        className="p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-        aria-pressed={selected === 'up'}
+  <div className="flex items-center gap-1 mt-6 self-start text-white select-none">
+    {/* Upvote Button */}
+    <motion.button
+      onClick={() => handleVote('upvote')}
+      whileTap={{ scale: 0.95 }}
+      title="Upvote"
+      className="p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+      aria-pressed={selected === 'up'}
+    >
+      <motion.svg
+        custom="up"
+        variants={iconVariants}
+        animate={selected === 'up' ? 'active' : 'default'}
+        whileHover={{ scale: 1.15, y: -4, transition: { type: 'tween', duration: 0.25, ease: 'easeOut' } }}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill={selected === 'up' ? ORANGE : GRAY}
+        stroke={selected === 'up' ? ORANGE : GRAY}
+        strokeWidth="2"
+        className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
       >
-        <motion.svg
-          custom="up"
-          variants={iconVariants}
-          animate={selected === 'up' ? 'active' : 'default'}
-          whileHover={{ scale: 1.15, y: -4, transition: { type: 'tween', duration: 0.25, ease: 'easeOut' } }}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill={selected === 'up' ? ORANGE : GRAY}
-          stroke={selected === 'up' ? ORANGE : GRAY}
-          strokeWidth="2"
-          className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
-        >
-          <path d="M4 16h16L12 6 4 16z" />
-        </motion.svg>
-      </motion.button>
-
+        <path d="M4 16h16L12 6 4 16z" />
+      </motion.svg>
+    </motion.button>
       {/* Vote Total */}
       <div className="h-6 w-12 flex justify-center items-center overflow-hidden select-text">
         <AnimatePresence mode="wait" initial={false}>
@@ -124,27 +123,27 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
 
       {/* Downvote Button */}
       <motion.button
-        onClick={() => handleVote('downvote')}
-        whileTap={{ scale: 0.95 }}
-        title="Downvote"
-        className="p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
-        aria-pressed={selected === 'down'}
+      onClick={() => handleVote('downvote')}
+      whileTap={{ scale: 0.95 }}
+      title="Downvote"
+      className="p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+      aria-pressed={selected === 'down'}
+    >
+      <motion.svg
+        custom="down"
+        variants={iconVariants}
+        animate={selected === 'down' ? 'active' : 'default'}
+        whileHover={{ scale: 1.15, y: 4, transition: { type: 'tween', duration: 0.25, ease: 'easeOut' } }}
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill={selected === 'down' ? ORANGE : GRAY}
+        stroke={selected === 'down' ? ORANGE : GRAY}
+        strokeWidth="2"
+        className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
       >
-        <motion.svg
-          custom="down"
-          variants={iconVariants}
-          animate={selected === 'down' ? 'active' : 'default'}
-          whileHover={{ scale: 1.15, y: 4, transition: { type: 'tween', duration: 0.25, ease: 'easeOut' } }}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill={selected === 'down' ? ORANGE : GRAY}
-          stroke={selected === 'down' ? ORANGE : GRAY}
-          strokeWidth="2"
-          className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
-        >
-          <path d="M4 8h16L12 18 4 8z" />
-        </motion.svg>
-      </motion.button>
+        <path d="M4 8h16L12 18 4 8z" />
+      </motion.svg>
+    </motion.button>
     </div>
   );
 }
