@@ -7,12 +7,15 @@ interface Params {
   id: string;
 }
 
-export async function POST(req: NextRequest, context: { params: Params }) {
-  const blogId = context.params.id;
+export async function POST(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id: blogId } = await context.params;
   const { voteType } = await req.json(); // "UPVOTE" or "DOWNVOTE"
 
   if (!blogId || !["UPVOTE", "DOWNVOTE"].includes(voteType)) {
-    return NextResponse.json({ error: "Invalid blog ID or vote type." }, { status: 400 });
+    return new Response(JSON.stringify({ error: "Invalid input" }), { status: 400 });
   }
 
   // === Get or create user ID from cookie ===
@@ -40,11 +43,10 @@ export async function POST(req: NextRequest, context: { params: Params }) {
 
   // Get existing vote if any
   const existingVote = await prisma.vote.findUnique({
-    where: {
-      blogId_userId: { blogId, userId },
-    },
-  });
-
+  where: {
+    userId_blogId: { userId, blogId },
+  },
+});
   let message = "";
 
   // 1. Create new vote

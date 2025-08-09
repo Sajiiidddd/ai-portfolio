@@ -9,55 +9,64 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?  // <- Now optional
-  email     String  @unique
+  id        String    @id @default(cuid())
+  name      String?   // optional name
+  email     String    @unique
   image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  comments Comment[]
-  votes    Vote[]
+  comments  Comment[]
+  votes     Vote[]
+
+  @@index([email]) // faster lookups by email
 }
 
-
 model Blog {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
-  slug        String   @unique
-  description String
+  slug        String     @unique
+  image     String? 
   content     String
-  image       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
-  comments Comment[]
-  votes    Vote[]
+  comments    Comment[]
+  votes       Vote[]
+
+  @@index([slug]) // faster blog lookups by slug
 }
 
 model Comment {
   id        String   @id @default(cuid())
-  blogId    String
-  userId    String
-  author    String
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id])
+  userId    String
+  blogId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([blogId])
 }
 
 model Vote {
   id        String   @id @default(cuid())
-  blog      Blog     @relation(fields: [blogId], references: [id])
-  blogId    String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  type      VoteType @default(UPVOTE) // <-- Add a default value for type
+  type      VoteType
   createdAt DateTime @default(now())
 
-  @@unique([blogId, userId]) // ✅ This is the important part!
+  userId    String
+  blogId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId]) // one vote per user per blog
+  @@index([blogId])
+  @@index([userId])
 }
 
 enum VoteType {

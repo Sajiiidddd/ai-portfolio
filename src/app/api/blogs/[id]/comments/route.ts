@@ -1,51 +1,102 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+// src/app/api/blogs/[id]/comments/route.ts
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getCurrentUserId } from "@/lib/auth";
 
-const getCurrentUserId = () => 'anonymous-temp'; // Replace later
-
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
-  const { params } = await Promise.resolve(context);
-const blogId = params.id;
-  const { author, content } = await req.json();
-  const userId = getCurrentUserId();
-
-  if (!author || !content) {
-    return NextResponse.json({ error: 'Name and comment required' }, { status: 400 });
-  }
-
+//GET
+export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   try {
-    const comment = await prisma.comment.create({
-      data: {
-        blogId,
-        author,
-        content,
-        userId,
+    const { id } = await context.params;
+
+    const comments = await prisma.comment.findMany({
+  where: { blogId: id },
+  orderBy: { createdAt: "desc" },
+  include: {
+    user: {
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+    },
+  },
+});
+
+
+    // Normalize user names to "Anonymous" if empty or null
+    const commentsWithAnonNames = comments.map((c) => ({
+      ...c,
+      user: {
+        ...c.user,
+        name: c.user?.name && c.user.name.trim() !== "" ? c.user.name : "Anonymous",
+      },
+    }));
+
+    return NextResponse.json(commentsWithAnonNames);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch comments" },
+      { status: 500 }
+    );
+  }
+}
+
+
+// POST: Create a new comment for a blog
+export async function POST(
+  request: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    const { content, author } = await request.json();
+
+    if (!content || content.trim().length === 0) {
+      return NextResponse.json(
+        { error: "Comment content is required" },
+        { status: 400 }
+      );
+    }
+
+    const userId = await getCurrentUserId();
+
+    // Always upsert user and update name if provided, else keep previous name
+    await prisma.user.upsert({
+      where: { id: userId },
+      update: author && author.trim() !== "" ? { name: author.trim() } : {},
+      create: {
+        id: userId,
+        name: author && author.trim() !== "" ? author.trim() : null,
+        email: `${userId}@local.fake`,
       },
     });
 
-    return NextResponse.json(comment);
-  } catch (error) {
-    console.error('[POST /comments]', error);
-    return NextResponse.json({ error: 'Failed to create comment' }, { status: 500 });
-  }
-}
-
-export async function GET(_: NextRequest, context: { params: { id: string } }) {
-  const { params } = await Promise.resolve(context);
-  const blogId = params.id;
-
-  try {
-    const comments = await prisma.comment.findMany({
-      where: { blogId },
-      orderBy: { createdAt: 'desc' },
+    const newComment = await prisma.comment.create({
+      data: {
+        content,
+        blogId: id,
+        userId,
+      },
+      include: {
+        user: {
+          select: { id: true, name: true, image: true },
+        },
+      },
     });
-    return NextResponse.json(comments);
+
+    // Return userId in the response for frontend ownership checks
+    return NextResponse.json(
+      { ...newComment, userId },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('[GET /comments]', error);
-    return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
+    console.error("Error creating comment:", error);
+    return NextResponse.json(
+      { error: "Failed to create comment" },
+      { status: 500 }
+    );
   }
 }
-
-
 
 

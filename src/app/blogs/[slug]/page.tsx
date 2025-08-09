@@ -1,3 +1,4 @@
+// src/app/blogs/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import BlogVotes from '@/components/BlogVotes';
@@ -11,15 +12,36 @@ interface BlogPageProps {
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
+  // Fetch blog + comments + comment users on SSR
   const blog = await prisma.blog.findUnique({
     where: { slug: params.slug },
     include: {
-      comments: { orderBy: { createdAt: 'desc' } },
+      comments: {
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
       votes: true,
     },
   });
 
   if (!blog) return notFound();
+
+  // Normalize usernames to "Anonymous" if missing
+  const normalizedComments = blog.comments.map((c) => ({
+    ...c,
+    user: {
+      ...c.user,
+      name: c.user?.name && c.user.name.trim() !== '' ? c.user.name : 'Anonymous',
+    },
+  }));
 
   const upvotes = blog.votes.filter((v) => v.type === 'UPVOTE').length;
   const downvotes = blog.votes.filter((v) => v.type === 'DOWNVOTE').length;
@@ -52,15 +74,15 @@ export default async function BlogPage({ params }: BlogPageProps) {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              p: ({ node, children }) => <p className="mb-4">{children}</p>,
-              ul: ({ node, children }) => <ul className="list-disc pl-5 mb-4">{children}</ul>,
-              ol: ({ node, children }) => <ol className="list-decimal pl-5 mb-4">{children}</ol>,
-              li: ({ node, children }) => <li className="mb-1">{children}</li>,
-              h2: ({ node, children }) => <h2 className="text-2xl font-bold mt-8 mb-4">{children}</h2>,
-              h3: ({ node, children }) => <h3 className="text-xl font-semibold mt-6 mb-3">{children}</h3>,
-              a: ({ node, ...props }) => <a className="text-blue-400 hover:underline" {...props} />,
-              strong: ({ node, children }) => <strong className="font-semibold">{children}</strong>,
-              em: ({ node, children }) => <em className="italic">{children}</em>,
+              p: ({ children }) => <p className="mb-4">{children}</p>,
+              ul: ({ children }) => <ul className="list-disc pl-5 mb-4">{children}</ul>,
+              ol: ({ children }) => <ol className="list-decimal pl-5 mb-4">{children}</ol>,
+              li: ({ children }) => <li className="mb-1">{children}</li>,
+              h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-4">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-xl font-semibold mt-6 mb-3">{children}</h3>,
+              a: ({ ...props }) => <a className="text-blue-400 hover:underline" {...props} />,
+              strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+              em: ({ children }) => <em className="italic">{children}</em>,
             }}
           >
             {blog.content}
@@ -69,7 +91,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
         {/* Votes & Comments */}
         <BlogVotes blogId={blog.id} upvotes={upvotes} downvotes={downvotes} />
-        <BlogComments blogId={blog.id} initialComments={blog.comments} />
+        <BlogComments blogId={blog.id} initialComments={normalizedComments} />
       </div>
     </main>
   );

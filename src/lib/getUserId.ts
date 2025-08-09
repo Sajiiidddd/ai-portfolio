@@ -1,21 +1,16 @@
 // src/lib/getUserId.ts
-import { cookies } from "next/headers";
 import { v4 as uuidv4 } from "uuid";
+import { cookies } from 'next/headers';
 
-export function getOrCreateUserId(): string {
-  const cookieStore = cookies();
-  let userId = cookieStore.get("userId")?.value;
+export async function getOrCreateUserId(): Promise<string> {
+  const cookieStore = await cookies();
+  let userId = cookieStore.get("user_id")?.value;
 
   if (!userId) {
     userId = uuidv4();
-    cookieStore.set("userId", userId, {
-      httpOnly: true,
-      path: "/",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 365, // 1 year
-    });
   }
 
   return userId;
 }
+
 
