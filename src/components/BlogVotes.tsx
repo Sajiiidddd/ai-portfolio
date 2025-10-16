@@ -19,59 +19,29 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
   const [total, setTotal] = useState(Math.max(0, upvotes - downvotes));
 
   useEffect(() => {
-    const fetchUserVote = async () => {
+    async function fetchUserVote() {
       try {
         const res = await fetch(`/api/blogs/${blogId}/votes`, { credentials: 'include' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.voteType === 'UPVOTE') setSelected('up');
-          else if (data.voteType === 'DOWNVOTE') setSelected('down');
-          else setSelected(null);
+        if (!res.ok) throw new Error('Failed to fetch votes');
+        const data = await res.json();
 
-          if (typeof data.upvotes === 'number' && typeof data.downvotes === 'number') {
-            setVotes({ upvotes: data.upvotes, downvotes: data.downvotes });
-          }
+        if (data.voteType === 'UPVOTE') setSelected('up');
+        else if (data.voteType === 'DOWNVOTE') setSelected('down');
+        else setSelected(null);
+
+        if (typeof data.upvotes === 'number' && typeof data.downvotes === 'number') {
+          setVotes({ upvotes: data.upvotes, downvotes: data.downvotes });
+          setTotal(Math.max(0, data.upvotes - data.downvotes));
         }
       } catch (err) {
         console.error('Failed to fetch user vote', err);
       }
-    };
+    }
     fetchUserVote();
   }, [blogId]);
 
-  useEffect(() => {
-    setTotal(Math.max(0, votes.upvotes - votes.downvotes));
-  }, [votes]);
-
   const handleVote = async (voteType: LocalVoteType) => {
     const backendVoteType: VoteType = voteType === 'upvote' ? 'UPVOTE' : 'DOWNVOTE';
-    const newVotes = { ...votes };
-    let newSelected = selected;
-
-    if (selected === 'up' && voteType === 'upvote') {
-      newVotes.upvotes = Math.max(0, newVotes.upvotes - 1);
-      newSelected = null;
-    } else if (selected === 'down' && voteType === 'downvote') {
-      newVotes.downvotes = Math.max(0, newVotes.downvotes - 1);
-      newSelected = null;
-    } else if (selected === 'up' && voteType === 'downvote') {
-      newVotes.upvotes = Math.max(0, newVotes.upvotes - 1);
-      newVotes.downvotes += 1;
-      newSelected = 'down';
-    } else if (selected === 'down' && voteType === 'upvote') {
-      newVotes.downvotes = Math.max(0, newVotes.downvotes - 1);
-      newVotes.upvotes += 1;
-      newSelected = 'up';
-    } else if (voteType === 'upvote') {
-      newVotes.upvotes += 1;
-      newSelected = 'up';
-    } else if (voteType === 'downvote') {
-      newVotes.downvotes += 1;
-      newSelected = 'down';
-    }
-
-    setVotes(newVotes);
-    setSelected(newSelected);
 
     try {
       const res = await fetch(`/api/blogs/${blogId}/votes`, {
@@ -80,15 +50,20 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
         credentials: 'include',
         body: JSON.stringify({ voteType: backendVoteType }),
       });
-      if (res.ok) {
-        const updated = await res.json();
-        if (typeof updated.upvotes === 'number' && typeof updated.downvotes === 'number') {
-          setVotes({ upvotes: updated.upvotes, downvotes: updated.downvotes });
-        }
-        if (updated.voteType === 'UPVOTE') setSelected('up');
-        else if (updated.voteType === 'DOWNVOTE') setSelected('down');
-        else setSelected(null);
+
+      if (!res.ok) throw new Error('Vote failed');
+
+      const updated = await res.json();
+
+      if (typeof updated.upvotes === 'number' && typeof updated.downvotes === 'number') {
+        setVotes({ upvotes: updated.upvotes, downvotes: updated.downvotes });
+        setTotal(Math.max(0, updated.upvotes - updated.downvotes));
       }
+
+      if (updated.voteType === 'UPVOTE') setSelected('up');
+      else if (updated.voteType === 'DOWNVOTE') setSelected('down');
+      else setSelected(null);
+
     } catch (err) {
       console.error('Vote error:', err);
     }
@@ -122,7 +97,7 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
           fill={selected === 'up' ? ORANGE : GRAY}
           stroke={selected === 'up' ? ORANGE : GRAY}
           strokeWidth="2"
-          className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
+          className="w-7 h-7 transition-colors duration-200 cursor-pointer"
         >
           <path d="M4 16h16L12 6 4 16z" />
         </motion.svg>
@@ -163,7 +138,7 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
           fill={selected === 'down' ? ORANGE : GRAY}
           stroke={selected === 'down' ? ORANGE : GRAY}
           strokeWidth="2"
-          className="w-7 h-7 transition-colors duration-200 cursor-pointer hover:fill-[#f97316] hover:stroke-[#f97316]"
+          className="w-7 h-7 transition-colors duration-200 cursor-pointer"
         >
           <path d="M4 8h16L12 18 4 8z" />
         </motion.svg>
@@ -171,13 +146,3 @@ export default function BlogVotes({ blogId, upvotes, downvotes }: BlogVotesProps
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-

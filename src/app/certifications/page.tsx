@@ -155,7 +155,7 @@ export default function CertificationsPage() {
             ))}
             {/* Custom cursor for timeline area - Emerald Green */}
             <style>{`
-              .group\/timeline:hover { cursor: url('data:image/svg+xml;utf8,<svg width=24 height=24 xmlns='http://www.w3.org/2000/svg'><circle cx=12 cy=12 r=8 fill='none' stroke='%2300E676' stroke-width=2/></svg>') 12 12, pointer; }
+              .group\\/timeline:hover { cursor: url('data:image/svg+xml;utf8,<svg width=24 height=24 xmlns='http://www.w3.org/2000/svg'><circle cx=12 cy=12 r=8 fill='none' stroke='%2300E676' stroke-width=2/></svg>') 12 12, pointer; }
             `}</style>
           </div>
           {/* Certifications */}

@@ -26,7 +26,7 @@ export default function HeroTextBox() {
 
   return (
     <motion.div
-      className="absolute top-10 right-10 z-30 w-full max-w-xl pointer-events-auto text-white text-left space-y-4"
+      className="absolute top-10 inset-x-4 md:inset-x-auto md:right-10 z-30 w-full max-w-xl pointer-events-auto text-white text-left space-y-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -57,18 +57,3 @@ export default function HeroTextBox() {
     </motion.div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

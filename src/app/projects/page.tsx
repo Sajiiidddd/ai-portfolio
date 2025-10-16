@@ -130,7 +130,7 @@ function ProjectsOverlay({ activeIdx }: { activeIdx: number }) {
           </h1>
         </motion.div>
         <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row items-center justify-center w-full max-w-full pointer-events-none"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-row items-center w-full max-w-full justify-center transition-opacity duration-500 pointer-events-none"
           animate={{ opacity: hovered ? 1 : 0 }}
         >
           <motion.div
@@ -245,7 +245,7 @@ export default function ProjectsPage() {
       <ProjectsOverlay activeIdx={activeIdx} />
 
       {/* Vertical timeline bar - No changes */}
-      <div className="fixed left-10 top-1/2 transform -translate-y-1/2 flex flex-col items-center w-12 z-50 pointer-events-auto">
+      <div className="hidden md:flex fixed left-10 top-1/2 transform -translate-y-1/2 flex-col items-center w-12 z-50 pointer-events-auto">
         {projects.map((proj, idx) => (
           <motion.div
             key={proj.year}
@@ -317,10 +317,3 @@ export default function ProjectsPage() {
     </main>
   );
 }
-
-
-
-
-
-
-

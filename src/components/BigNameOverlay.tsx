@@ -31,7 +31,7 @@ export default function BigNameOverlay() {
 
   return (
     <div
-      className="absolute bottom-10 left-8 right-8 z-30 pointer-events-auto"
+      className="absolute bottom-10 left-4 right-4 md:left-8 md:right-8 z-30 pointer-events-auto"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -39,14 +39,14 @@ export default function BigNameOverlay() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.5 }}
-        className="flex flex-wrap justify-between items-end relative"
+        className="flex flex-col items-center md:flex-row md:justify-between md:items-end relative"
       >
         {/* Actual Name */}
         <motion.div
           className="transition-opacity duration-500"
           animate={{ opacity: hovered ? 0 : 1 }}
         >
-          <h1 className="text-white text-[12vw] font-extrabold tracking-tighter leading-none">
+          <h1 className="text-white text-[18vw] md:text-[12vw] font-extrabold tracking-tighter leading-none">
             SAJID
           </h1>
         </motion.div>
@@ -54,7 +54,7 @@ export default function BigNameOverlay() {
           className="transition-opacity duration-500"
           animate={{ opacity: hovered ? 0 : 1 }}
         >
-          <h1 className="text-white text-[12vw] font-extrabold tracking-tighter leading-none">
+          <h1 className="text-white text-[18vw] md:text-[12vw] font-extrabold tracking-tighter leading-none">
             TAMBOLI
           </h1>
         </motion.div>
@@ -80,5 +80,3 @@ export default function BigNameOverlay() {
     </div>
   )
 }
-
-

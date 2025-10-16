@@ -153,7 +153,7 @@ export default function BlogsPage() {
       <BlogsOverlay activeIdx={activeIdx} blogs={blogs} />
 
       {/* Timeline Dots */}
-      <div className="fixed left-10 top-1/2 transform -translate-y-1/2 flex flex-col items-center w-12 z-50 pointer-events-auto">
+      <div className="hidden md:flex fixed left-10 top-1/2 transform -translate-y-1/2 flex-col items-center w-12 z-50 pointer-events-auto">
         {blogs.map((_, idx) => (
           <motion.div
             key={idx}
@@ -176,7 +176,7 @@ export default function BlogsPage() {
       </div>
 
       <div className="relative w-full max-w-6xl mx-auto pt-32 pb-40 flex">
-        <div className="flex-1 flex flex-col gap-32 ml-20">
+        <div className="flex-1 flex flex-col gap-32 md:ml-20">
           {blogs.map((blog, idx) => (
             <motion.div
               key={blog.id}
@@ -186,7 +186,7 @@ export default function BlogsPage() {
               transition={{ duration: 0.6, type: 'spring', stiffness: 60, damping: 18 }}
               className="flex flex-col md:flex-row items-center gap-10 cursor-pointer"
             >
-              <Link href={`/blogs/${blog.slug}`} className="flex items-center gap-10 w-full">
+              <Link href={`/blogs/${blog.slug}`} className="flex flex-col md:flex-row items-center gap-10 w-full">
                 <Image
                   src={blog.image}
                   alt={blog.title}
@@ -218,8 +218,3 @@ function generateFallbackPair(title: string): [string, string] {
   if (words.length >= 2) return [words[0], words[1]];
   return [title.slice(0, Math.floor(title.length / 2)), title.slice(Math.floor(title.length / 2))];
 }
-
-
-
-
-

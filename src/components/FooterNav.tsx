@@ -32,7 +32,7 @@ export default function FooterNav() {
           },
         },
       }}
-      className="absolute bottom-0 left-0 right-0 z-30 px-6 py-4 flex justify-between text-white uppercase text-sm tracking-widest"
+      className="absolute bottom-0 left-0 right-0 z-30 px-6 py-4 flex flex-wrap justify-center md:justify-between text-white uppercase text-sm tracking-widest gap-4 md:gap-0"
     >
       {links.map((link) => (
         <motion.a
@@ -53,6 +53,3 @@ export default function FooterNav() {
     </motion.footer>
   )
 }
-
-
-

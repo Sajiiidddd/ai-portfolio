@@ -5,19 +5,21 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { useHover } from '../context/HoverContext'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Projects', path: '/projects' },
   { name: 'Skills', path: '/skills' },
   { name: 'Certifications', path: '/certifications' },
-  { name: 'Experience', path: '/experience' }, // changed from 'Journey' and linked to /experience
+  { name: 'Experience', path: '/experience' },
   { name: 'Contact', path: '/contact' },
 ]
 
 export default function Navbar() {
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const { setHovered } = useHover()
 
@@ -27,12 +29,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen)
+
   return (
     <header className={`fixed top-0 w-full z-50 transition-shadow ${scrolled ? 'shadow-md bg-white/80 backdrop-blur dark:bg-black/70' : ''}`}>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <Link href="/" className="text-xl font-bold text-gray-900 dark:text-white">
           Sajid
         </Link>
+        {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-6 items-center">
           {navLinks.map(({ name, path }) => {
             // Map nav name to NavItem type for hover context
@@ -73,8 +78,43 @@ export default function Navbar() {
             </button>
           </li>
         </ul>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="text-gray-900 dark:text-white">
+            {/* Hamburger Icon */}
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+          </button>
+        </div>
       </nav>
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white/80 dark:bg-black/70 backdrop-blur"
+          >
+            <ul className="flex flex-col items-center space-y-4 py-4">
+              {navLinks.map(({ name, path }) => (
+                <li key={path}>
+                  <Link
+                    href={path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`transition font-medium hover:text-blue-500 ${
+                      pathname === path ? 'text-blue-500 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }
-

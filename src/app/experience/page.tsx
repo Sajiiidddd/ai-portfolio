@@ -118,8 +118,8 @@ const experiences = [
     image: "/images/yoda2.jpg",
   },
 /* {
-    year: "2023",
-    title: "Growth & Recognition",
+    year: "2025??",
+    title: "Future Endeavors",
     description:
       "Received recognition for my work and continued to grow my expertise in the field.",
     image: "/images/image3.jpg",
