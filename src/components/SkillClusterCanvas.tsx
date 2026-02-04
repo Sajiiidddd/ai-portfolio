@@ -29,6 +29,8 @@ const nodes: NodeType[] = [
   { id: 'fastapi', label: 'FastAPI', icon: '/skills/fastapi.svg', level: 'advanced' },
   { id: 'sql', label: 'SQL', icon: '/skills/sql.svg', level: 'advanced' },
   { id: 'nodejs', label: 'Node.js', icon: '/skills/nodejs.svg', level: 'intermediate' },
+  { id: 'pytorch', label: 'PyTorch', icon: '/skills/pytorch.svg', level: 'advanced' },
+  { id: 'django', label: 'Django', icon: '/skills/django.svg', level: 'intermediate' },
 ];
 
 const baseRadii = {
