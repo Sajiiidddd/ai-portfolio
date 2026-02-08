@@ -7,7 +7,7 @@ import { FiArrowUpRight } from 'react-icons/fi'
 const ResumeButton: React.FC = () => {
   return (
     <motion.a
-      href="/sajid_resume.pdf"
+      href="/Sajid_Tamboli_AIML_Resume.pdf"
       target="_blank"
       rel="noopener noreferrer"
       
