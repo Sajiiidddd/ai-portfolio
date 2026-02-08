@@ -1,9 +1,9 @@
 import '../styles/globals.css'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { HoverProvider } from '@/components/HoverContext'
-import BackgroundPreview from '../components/BackgroundPreview'
+import BackgroundPreview from '@/components/BackgroundPreview' // Check path if needed
 import { ClientProvider } from '@/components/ClientProvider'
-import { Analytics } from '@vercel/analytics/next' // <-- NEW
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' })
@@ -16,30 +16,22 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-black text-white`}>
         <HoverProvider>
           <ClientProvider>
+            {/* BackgroundPreview handles the footer hover color changes */}
             <BackgroundPreview />
-            {/* Responsive main wrapper for all pages */}
-            <main className="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            
+            {/* 🚨 CRITICAL FIX: Removed "max-w-3xl mx-auto px-4" 
+                Changed to "w-full min-h-screen relative" 
+            */}
+            <main className="w-full min-h-screen relative overflow-x-hidden">
               {children}
             </main>
           </ClientProvider>
         </HoverProvider>
-        <Analytics /> {/* Vercel Analytics */}
+        <Analytics />
       </body>
     </html>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-

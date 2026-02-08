@@ -1,15 +1,14 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import CodeBootScreen from "@/components/CodeBootScreen";
+import { motion, AnimatePresence } from "framer-motion";
+import DecipherTextGlitch from "@/components/DecipherTextGlitch";
 import ProjectsBackground from "@/components/ProjectsBackground";
 import InteractiveBackground from "@/components/InteractiveBackground";
 import FooterNav from "@/components/FooterNav";
 import ProjectsCommitStackBg from "@/components/ProjectsCommitStackBg";
 import ProjectDetailModal from "@/components/ProjectDetailModal";
 
-// --- No changes to this section ---
 const altPairs = [
   ["BUILD", "CREATE"],
   ["IDEA", "REALITY"],
@@ -22,7 +21,19 @@ const altPairs = [
 ];
 
 const projects = [
-    {
+  {
+    "year": "January 2026",
+    "title": "F1 Strategy OS",
+    "description": "StrategyOS is a real-time AI prediction engine that translates complex Formula 1 telemetry into actionable race strategy insights. It uses a custom-built neural network to forecast race outcomes with high precision, helping visualize how strategic decisions impact the final grid.",
+    "image": "/images/f1_png.png",
+    "inputExample": "Select a race session (e.g., 2021 Abu Dhabi), a specific lap number, and optional simulation parameters like rain or track temperature overrides.",
+    "outputExample": "Generates a live leaderboard predicting the final finishing position for every driver, displays a 'Delta' metric showing deviation from actual results, and provides an AI-generated strategy debrief explaining anomalies.",
+    "technicalOverview": "StrategyOS is a full-stack AI application built with a decoupled architecture. The backend runs a custom 64-dimension Transformer model (PyTorch) trained on 5 years of FastF1 telemetry, optimized via Optuna for CPU inference. This inference engine is hosted on Hugging Face Spaces. The frontend is a cinematic Next.js/React dashboard deployed on Vercel that consumes the model via the Gradio Client API. It features a sliding-window prediction mechanism (10-lap sequence) and integrates Google Gemini 1.5 Pro to analyze statistical anomalies and 'Chaos Factors' like Safety Cars.",
+    "githubUrl": "https://github.com/Sajiiidddd/F1-Prediction",
+    "huggingFaceUrl": "https://huggingface.co/spaces/Susjid/F1-Neural-Strategist-API",
+    "deploymentUrl": "https://f1-strategy-dashboard.vercel.app"
+  },
+  {
     year: "May 2025",
     title: "Picasso: Your Inner Echoes",
     description: "Picasso is a multi-modal AI system that translates human emotions into personalized generative art, integrating advanced techniques in NLP, computer vision, and generative modeling. It captures the essence of human feelings and translates them into stunning visual representations.",
@@ -100,7 +111,6 @@ const projects = [
 
 type ProjectType = typeof projects[number];
 
-// --- No changes to ProjectsOverlay component ---
 function ProjectsOverlay({ activeIdx }: { activeIdx: number }) {
   const [pair, setPair] = useState(altPairs[0]);
   const [hovered, setHovered] = useState(false);
@@ -161,21 +171,12 @@ function ProjectsOverlay({ activeIdx }: { activeIdx: number }) {
 
 
 export default function ProjectsPage() {
-  // --- CHANGE 1: Modified useState for `booting` ---
-  // We now use an initializer function that runs only once on component mount.
+  // --- 1. SESSION CHECK FOR BOOT SCREEN ---
   const [booting, setBooting] = useState(() => {
-    // sessionStorage is a browser-only API, so we check if `window` is defined.
     if (typeof window !== "undefined") {
-      // Check if our flag 'hasBooted' is already in sessionStorage.
       const hasBootedInSession = sessionStorage.getItem("hasBooted");
-      // If the flag exists, it means the user has seen the animation in this session.
-      // So, we start with `booting` as false.
-      if (hasBootedInSession) {
-        return false;
-      }
+      if (hasBootedInSession) return false;
     }
-    // If it's the first visit in the session (or we're on the server),
-    // we should show the boot screen.
     return true;
   });
 
@@ -185,17 +186,15 @@ export default function ProjectsPage() {
   const projRefs = useRef<(HTMLDivElement | null)[]>([]);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // --- CHANGE 2: New `useEffect` to set the session flag ---
-  useEffect(() => {
-    // This effect runs if the `booting` state is `true`.
-    if (booting) {
-      // We set a flag in sessionStorage to remember that the boot animation
-      // has started for this session.
-      sessionStorage.setItem("hasBooted", "true");
+  // --- 2. FINISH HANDLER ---
+  // This is called directly by the DecipherTextGlitch component when it's done
+  const handleBootFinish = () => {
+    if (typeof window !== "undefined") {
+        sessionStorage.setItem("hasBooted", "true");
     }
-  }, [booting]); // The dependency array ensures this runs only when `booting` changes.
+    setBooting(false);
+  };
 
-  // --- No changes to the observer logic ---
   const observe = useCallback((elements: HTMLDivElement[]) => {
     if (observer.current) {
       observer.current.disconnect();
@@ -233,18 +232,38 @@ export default function ProjectsPage() {
   }, [observe]);
 
 
+  // --- 3. CONDITIONAL RENDERING ---
+  // If booting, show ONLY the boot screen. Nothing else renders.
+  if (booting) {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <DecipherTextGlitch 
+            text="ACCESSING PROJECT ARCHIVES..." 
+            glitchSpeed={25}
+            // Visible colors: Cyan, Slate, White
+            glitchColors={['#22d3ee', '#94a3b8', '#e2e8f0', '#0e7490']} 
+            revealSpeed={20} 
+            onComplete={handleBootFinish}
+          />
+        </div>
+    );
+  }
+
+  // --- 4. MAIN CONTENT RENDERS ONLY AFTER BOOTING IS FALSE ---
   return (
-    <main className="relative w-full min-h-screen bg-black text-white overflow-x-hidden">
+    <motion.main 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        transition={{ duration: 1 }}
+        className="relative w-full min-h-screen bg-black text-white overflow-x-hidden"
+    >
       <InteractiveBackground />
       <ProjectsBackground />
       <ProjectsCommitStackBg />
       
-      {/* --- This rendering logic remains the same and works perfectly with our changes --- */}
-      {booting && <CodeBootScreen onFinish={() => setBooting(false)} />}
-      
       <ProjectsOverlay activeIdx={activeIdx} />
 
-      {/* Vertical timeline bar - No changes */}
+      {/* Vertical timeline bar */}
       <div className="hidden md:flex fixed left-10 top-1/2 transform -translate-y-1/2 flex-col items-center w-12 z-50 pointer-events-auto">
         {projects.map((proj, idx) => (
           <motion.div
@@ -268,12 +287,10 @@ export default function ProjectsPage() {
         ))}
       </div>
 
-      {/* FooterNav - No changes */}
       <div className="fixed bottom-0 left-0 right-0 z-30 pointer-events-auto">
         <FooterNav />
       </div>
 
-      {/* Projects List - No changes */}
       <div className="relative w-full max-w-6xl mx-auto pt-32 pb-40 flex">
         <div className="flex-1 flex flex-col gap-32 ml-20">
           {projects.map((proj, idx) => (
@@ -308,12 +325,11 @@ export default function ProjectsPage() {
         </div>
       </div>
       
-      {/* ProjectDetailModal - No changes */}
       <ProjectDetailModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         project={selectedProject}
       />
-    </main>
+    </motion.main>
   );
 }

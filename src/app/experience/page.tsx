@@ -104,11 +104,18 @@ function BelowDeckPreview({ exp, visible }: { exp: typeof experiences[0]; visibl
 
 const experiences = [
   {
-    year: "December 2024 - Present",
+    year: "December 2024 - December 2025",
     title: "AIML Lead at GDGOC-ADYPU",
     description:
       "Founded and currently lead a 150+ member AI/ML club focused on research and practical learning. Conducted technical sessions including a deep dive into AlexNet (2012), guiding 100+ students through CNN fundamentals and PyTorch implementation. Organized a 2-day workshop comparing regression models and neural networks for house price prediction using real-world datasets.",
     image: "/images/GDGOC.jpg",
+  },
+  {
+    year: "July 2025 - January 2026",
+    title: "AIML Intern at (ECM) Tata Motors Limited",
+    description:
+      "Engineered an universal BOM Comparator driven by NLP and BIML adopted across all 5 plants in India and is now patented as an internal tool at TMCV by ECM - Pune. Deployed a scalable architecture on Azure used by Finance, Product Line, Manufacturing departments. Collaborated with TTL workforces to re-iterate for data ingestion from SAP and PLM Teamcenter. Worked and implemented various other projects like RCK, Costing Restrcuturing, HEX-To-Tri",
+    image: "/images/TML.jpeg",
   },
   {
     year: "2025",

@@ -10,7 +10,7 @@ const themeMap: Record<string, { bg: string; text: string }> = {
   projects: { bg: '#1e40af', text: '#fff' },    // blue
   blog: { bg: '#7c3aed', text: '#fff' },        // violet
   contact: { bg: '#be185d', text: '#fff' },     // rose
-  skills: { bg: '#f59e42', text: '#222' },      // orange (example)
+  skills: { bg: '#000000', text: '#fff' },     // white (example)
   certifications: { bg: '#10b981', text: '#fff' }, // green (example)
 }
 
