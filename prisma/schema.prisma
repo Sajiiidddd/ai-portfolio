@@ -1,0 +1,161 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  name      String?   // optional name
+  email     String    @unique
+  image     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  comments  Comment[]
+  votes     Vote[]
+  commentLikes CommentLike[]
+
+  @@index([email]) // faster lookups by email
+}
+
+model Blog {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  description String?
+  image       String?
+  content     String
+  tags        String[]   @default([])
+  readTime    Int?
+  published   Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  comments    Comment[]
+  votes       Vote[]
+
+  @@index([slug])
+  @@index([published])
+  @@index([published, createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  blogId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  hidden    Boolean  @default(false)
+  likes     CommentLike[]
+
+  @@index([userId])
+  @@index([blogId])
+  @@index([blogId, createdAt])
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  commentId String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId]) // one heart per visitor per comment
+  @@index([commentId])
+  @@index([userId])
+}
+
+model Subscriber {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String?
+  confirmed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+
+  @@index([confirmed])
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  userId    String
+  blogId    String
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId]) // one vote per user per blog
+  @@index([blogId])
+  @@index([blogId, type])
+  @@index([userId])
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+model Recommendation {
+  id            String   @id @default(cuid())
+  type          String              // 'MOVIE' | 'SONG'
+  externalId    String
+  title         String
+  subtitle      String?
+  imageUrl      String?
+  year          String?
+  review        String
+  recommendedBy String   @default("Anonymous")
+  userId        String
+  timestamp     BigInt
+  upvotes       Int      @default(0)
+  downvotes     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  votes         RecommendationVote[]
+
+  @@index([type])
+  @@index([userId])
+  @@index([type, upvotes])
+}
+
+model RecommendationVote {
+  id               String   @id @default(cuid())
+  recommendationId String
+  userId           String
+  type             String              // 'UPVOTE' | 'DOWNVOTE'
+  createdAt        DateTime @default(now())
+
+  recommendation   Recommendation @relation(fields: [recommendationId], references: [id], onDelete: Cascade)
+
+  @@unique([recommendationId, userId], name: "recommendation_user_unique")
+  @@index([recommendationId])
+}
+
+model AgentQuery {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String?
+  source    String?  // 'gemini' | 'fallback'
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+

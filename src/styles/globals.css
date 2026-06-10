@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  @apply bg-black text-white font-sans antialiased;
+  transition: background-color 0.3s, color 0.3s;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* never let media blow out the viewport on small screens */
+img, video, canvas { max-width: 100%; }
+.bg-noise {
+  background-image: url('/textures/noise.png');
+  opacity: 0.04;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+
+
+/* ───────────────────────── Accessibility ───────────────────────── */
+
+/* Visible keyboard focus — important because the site hides the pointer
+   (cursor:none) in several places. Mouse clicks stay ring-free. */
+:focus-visible { outline: 2px solid #9ec8ff; outline-offset: 2px; border-radius: 2px; }
+:focus:not(:focus-visible) { outline: none; }
+
+/* Skip-to-content link — hidden until focused via keyboard */
+.skip-link {
+  position: fixed; left: 8px; top: -56px; z-index: 10000;
+  background: #ece9e1; color: #0a0a0a; padding: 10px 16px; border-radius: 6px;
+  font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; transition: top .2s ease;
+}
+.skip-link:focus { top: 8px; }
+
+/* Respect users who ask for less motion: tame animations/transitions and
+   restore the real cursor (the custom cursor follower is motion). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+  * { cursor: auto !important; }
+}
+
+/* Touch / coarse pointers never see a custom cursor — restore the default */
+@media (hover: none), (pointer: coarse) {
+  * { cursor: auto !important; }
+}
