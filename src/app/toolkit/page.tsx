@@ -13,6 +13,9 @@ const tiers: Tier[] = [
 
 type Cert = { t: string; i: string; y: string; img: string; url: string };
 const certs: Cert[] = [
+  { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", img: "", url: "https://drive.google.com/file/d/1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1/view?usp=sharing" },
+  { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", img: "/images/TML.jpg", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
+  { t: "MCP Deep Researcher Copyright", i: "Copyright Office, India", y: "2025", img: "", url: "https://drive.google.com/file/d/14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc/view?usp=drive_link" },
   { t: "C for Everyone: Structured Programming", i: "Coursera · UC Santa Cruz", y: "2023", img: "/images/Coursera%20C.jpg", url: "https://www.coursera.org/account/accomplishments/verify/FH42HNHEG9XG" },
   { t: "C++ For C Programmers, Part A", i: "Coursera · UC Santa Cruz", y: "2023", img: "/images/Coursera%20C++.jpg", url: "https://www.coursera.org/account/accomplishments/verify/5TZTB3DGD9RC" },
   { t: "J.P. Morgan Software Engineering", i: "Forage Virtual Experience", y: "2024", img: "/images/Forage%20Certificate.jpg", url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_ohdxxYhFy7YFhFY9n_1716726541894_completion_certificate.pdf" },
