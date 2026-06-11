@@ -83,7 +83,9 @@ function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void;
   };
 
   return (
-    <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) setConfirming(null); }}>
+          <div className="rec-ovblur" aria-hidden />
+          <div className="rec-modal rec-confirm">
       <div className="rec-modal">
         <h3>Add a {kind}</h3><div className="rec-mh">name · search · pick · review</div>
         <input className="rec-inp" value={name} maxLength={40} placeholder="Your name (required)" onChange={(e) => setName(e.target.value)} />
@@ -156,6 +158,7 @@ function EditModal({ rec, type, onClose, onSaved }: { rec: Rec; type: Kind; onCl
 
   return (
     <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="rec-ovblur" aria-hidden />
       <div className="rec-modal">
         <h3>Edit your {kind}</h3><div className="rec-mh">change the review · or swap the {kind}</div>
 
@@ -390,8 +393,9 @@ export default function RecommendationsClient() {
         .rec-add{margin-top:14px;font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#0a0a0a;background:#ece9e1;border:0;border-radius:7px;padding:10px 16px;cursor:pointer}
         .rec-add:disabled{opacity:.3;cursor:not-allowed}
         .rec-cap{font-family:var(--font-mono),monospace;font-size:10px;color:#55554f;letter-spacing:.06em;margin-left:10px}
-        .rec-ov{position:fixed;inset:0;background:rgba(5,5,5,.7);backdrop-filter:blur(4px);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
-        .rec-modal{width:100%;max-width:520px;background:#101116;border:1px solid rgba(236,233,225,.16);border-radius:14px;padding:22px;max-height:88vh;overflow:auto}
+        .rec-ov{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+        .rec-ovblur{position:absolute;inset:0;background:rgba(5,5,5,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);pointer-events:none}
+        .rec-modal{position:relative;z-index:1;width:100%;max-width:520px;background:#101116;border:1px solid rgba(236,233,225,.16);border-radius:14px;padding:22px;max-height:88vh;overflow:auto}
         .rec-modal h3{font-size:18px;margin-bottom:4px}.rec-mh{font-family:var(--font-mono),monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8a8a82;margin-bottom:16px}
         .rec-inp{width:100%;background:#0c0c0c;border:1px solid rgba(236,233,225,.14);border-radius:7px;padding:10px 12px;color:#ece9e1;font-size:14px;outline:none;margin-bottom:10px}.rec-inp:focus{border-color:rgba(236,233,225,.5)}
         .rec-results{max-height:240px;overflow:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
