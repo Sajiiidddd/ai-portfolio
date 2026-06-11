@@ -207,7 +207,7 @@ export default function ToolkitPage() {
         .foot-base{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:54px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
         .footnav{position:relative;z-index:2}
         @media(max-width:860px){
-          nav{padding:14px 18px}nav .links{display:none}.wrap{padding:0 18px}
+          nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}
           .grid.adv,.grid.int,.grid.rok,.grid.tools{grid-template-columns:repeat(3,1fr)}
           .certs{grid-template-columns:1fr}.certimg{height:300px;border-left:0;border-top:1px solid var(--line)}
           .root{cursor:auto}.dot,.ring{display:none}
