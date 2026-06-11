@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
       - name: Install (runs prisma generate via postinstall)
-        run: npm ci
+        run: npm install
       - name: Typecheck
         run: npm run typecheck
       - name: Lint
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm }
-      - run: npm ci
+      - run: npm install
       - name: Push schema to the test DB
         run: npx prisma db push --skip-generate
       - name: Seed
