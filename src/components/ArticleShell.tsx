@@ -35,6 +35,7 @@ export default function ArticleShell({ children }: { children: React.ReactNode }
           <a href="/blogs" className="on" onMouseEnter={hot} onMouseLeave={cold}>Writing</a>
           <a href="/toolkit" onMouseEnter={hot} onMouseLeave={cold}>Toolkit</a>
           <a href="/contact" onMouseEnter={hot} onMouseLeave={cold}>Contact</a>
+          <a href="/recommendations" onMouseEnter={hot} onMouseLeave={cold}>Recs</a>
         </div>
         <div className="as-clock as-mono"><span className="as-dim">Pune, IN</span><br /><span ref={clockRef}>--:--:--</span></div>
       </nav>
