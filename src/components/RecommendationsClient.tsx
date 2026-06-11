@@ -83,9 +83,8 @@ function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void;
   };
 
   return (
-    <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) setConfirming(null); }}>
-          <div className="rec-ovblur" aria-hidden />
-          <div className="rec-modal rec-confirm">
+    <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="rec-ovblur" aria-hidden="true"></div>
       <div className="rec-modal">
         <h3>Add a {kind}</h3><div className="rec-mh">name · search · pick · review</div>
         <input className="rec-inp" value={name} maxLength={40} placeholder="Your name (required)" onChange={(e) => setName(e.target.value)} />
@@ -158,7 +157,7 @@ function EditModal({ rec, type, onClose, onSaved }: { rec: Rec; type: Kind; onCl
 
   return (
     <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="rec-ovblur" aria-hidden />
+      <div className="rec-ovblur" aria-hidden="true"></div>
       <div className="rec-modal">
         <h3>Edit your {kind}</h3><div className="rec-mh">change the review · or swap the {kind}</div>
 
@@ -318,6 +317,7 @@ export default function RecommendationsClient() {
       {editing && <EditModal rec={editing} type={editing.type} onClose={() => setEditing(null)} onSaved={(u) => setItems((xs) => xs.map((x) => (x.id === u.id ? u : x)))} />}
       {confirming && (
         <div className="rec-ov" onClick={(e) => { if (e.target === e.currentTarget) setConfirming(null); }}>
+          <div className="rec-ovblur" aria-hidden="true"></div>
           <div className="rec-modal rec-confirm">
             <h3>Remove this {confirming.type === 'MOVIE' ? 'movie' : 'song'}?</h3>
             <div className="rec-mh">it drops off the board for everyone — this can&apos;t be undone</div>
