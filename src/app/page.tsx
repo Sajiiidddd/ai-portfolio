@@ -114,8 +114,8 @@ const experience: ExpItem[] = [
     body: "Founded a 150+ member AI/ML club and walked 100+ students through CNN fundamentals and PyTorch from scratch across 7+ workshops \u2014 including an AlexNet session with 100+ RSVPs. The fastest way to master something is to teach it.",
     stats: [{ v: "150+", k: "Members" }, { v: "7+", k: "Workshops" }] },
   { org: "ADYPU", role: "B.Tech \u00b7 AI & Data Science (Minor: Robotics)", range: "2023 \u2014 2026",
-    body: "B.Tech in Artificial Intelligence & Data Science with a Minor in Robotics \u2014 CGPA 8.04 (Semester 7: 9.40), graduating May 2026. Coursework across DSA, DBMS, OS, Deep Learning, NLP, Computer Vision, Robotics and LLMs.",
-    stats: [{ v: "8.04", k: "CGPA" }, { v: "2026", k: "Class of" }] },
+    body: "B.Tech in Artificial Intelligence & Data Science with a Minor in Robotics — CGPA 8.3 (Semester 8: 9.90), graduated May 2026. Coursework across DSA, DBMS, OS, Deep Learning, NLP, Computer Vision, Robotics and LLMs.",
+    stats: [{ v: "8.3", k: "CGPA" }, { v: "2026", k: "Class of" }] },
 ];
 
 type Post = { slug: string; title: string; tags: string[]; readTime: number | null; createdAt: string };
