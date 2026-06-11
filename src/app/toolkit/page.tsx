@@ -25,7 +25,7 @@ const certs: Cert[] = [
   { t: "C for Everyone, Part 2: Structured Programming", i: "Coursera · UC Santa Cruz", y: "2023", drive: "1N8zljaDYwyesAFYqMbwq8PLRX7BjO_Ix", url: "https://www.coursera.org/account/accomplishments/verify/FH42HNHEG9XG" },
   { t: "C for Everyone, Part 1: Programming Fundamentals", i: "Coursera · UC Santa Cruz", y: "2023", drive: "1ADIdV_SUI4N5IWrfEwFDYnH1xVG5YplJ", url: "https://www.coursera.org/account/accomplishments/verify/NQ86N86RSF6N" },
   { t: "J.P. Morgan Software Engineering", i: "Forage Virtual Experience", y: "2024", img: "/images/Forage%20Certificate.jpg", url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_ohdxxYhFy7YFhFY9n_1716726541894_completion_certificate.pdf" },
-  { t: "Google Cloud Skills Boost", i: "Google Cloud · Skills Boost", y: "2024–Present", img: "/images/gcsb1.png", url: "" },
+  { t: "Google Cloud Skills Boost", i: "Google Cloud · Skills Boost", y: "2024–Present", img: "/images/gcsb1.png", url: "https://www.credly.com/users/sajid-tamboli/badges/credly" },
 ];
 function driveId(u: string): string | null {
   const m = u.match(/\/file\/d\/([^/]+)/) || u.match(/[?&]id=([^&]+)/);
