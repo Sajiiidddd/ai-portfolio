@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { pixel, mono, grotesk } from '@/app/fonts';
-import SpotifySignInButton from './SpotifySignInButton';
 
 type Kind = 'MOVIE' | 'SONG';
 type Rec = {
@@ -16,7 +15,6 @@ const PALETTE = ['#3b4a6b', '#5a3b53', '#3b5a47', '#6b5a3b', '#4a3b6b', '#6b3b3b
 const col = (s: string) => PALETTE[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
 const net = (r: Rec) => r.upvotes - r.downvotes;
 
-/* ---- motif icons (replace emojis) ---- */
 function MovieMotif({ s = 16 }: { s?: number }) {
   return (<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
     <rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 9h18M3 15h18M8 5v14M16 5v14" opacity=".5" />
@@ -27,7 +25,6 @@ function SongMotif({ s = 16 }: { s?: number }) {
     <path d="M5 14V8M9 17V5M13 14V9M17 16V7M21 13v-2" />
   </svg>);
 }
-/* poster fallback = motif on a seeded gradient */
 function PosterArt({ kind, seed }: { kind: Kind; seed: string }) {
   return (<div className="rec-art" style={{ background: `linear-gradient(160deg, ${col(seed)}, #0e0e12)` }} aria-hidden>
     {kind === 'MOVIE'
@@ -40,7 +37,7 @@ function Poster({ r, cls }: { r: { imageUrl?: string | null; title: string; type
   return <div className={cls}><PosterArt kind={(r.type as Kind) || 'MOVIE'} seed={r.title} /></div>;
 }
 
-/* ============ Add modal (own local state → typing here never re-renders the page) ============ */
+/* ============ Add modal ============ */
 function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void; onAdded: (r: Rec) => void; }) {
   const kind = type === 'MOVIE' ? 'movie' : 'song';
   const [name, setName] = useState('');
@@ -94,12 +91,7 @@ function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void;
             {it.imageUrl ? <div className="rec-rth" style={{ backgroundImage: `url(${it.imageUrl})`, backgroundSize: 'cover' }} /> : <div className="rec-rth"><PosterArt kind={type} seed={it.title} /></div>}
             <div><div className="rec-rn">{it.title}</div><div className="rec-rs">{it.subtitle}{it.year ? ` · ${it.year}` : ''}</div></div></div>))}
           {q.trim().length >= 2 && results.length === 0 && searchErr && (
-            <div className="rec-empty space-y-3">
-              <div>{searchErr}</div>
-              {type === 'SONG' && searchErr.toLowerCase().includes('spotify') && (
-                <SpotifySignInButton callbackUrl="/recommendations" label="Connect Spotify" className="rec-go" />
-              )}
-            </div>
+            <div className="rec-empty">{searchErr}</div>
           )}
         </div>
         {picked && (<><input className="rec-inp" value={review} maxLength={50} placeholder="One-line review" onChange={(e) => setReview(e.target.value)} /><div className="rec-cc">{review.length}/50</div></>)}
@@ -110,7 +102,7 @@ function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void;
   );
 }
 
-/* ============ Edit modal: change the review AND/OR swap the pick ============ */
+/* ============ Edit modal ============ */
 function EditModal({ rec, type, onClose, onSaved }: { rec: Rec; type: Kind; onClose: () => void; onSaved: (r: Rec) => void; }) {
   const kind = type === 'MOVIE' ? 'movie' : 'song';
   const [review, setReview] = useState(rec.review);
@@ -178,12 +170,7 @@ function EditModal({ rec, type, onClose, onSaved }: { rec: Rec; type: Kind; onCl
               {it.imageUrl ? <div className="rec-rth" style={{ backgroundImage: `url(${it.imageUrl})`, backgroundSize: 'cover' }} /> : <div className="rec-rth"><PosterArt kind={type} seed={it.title} /></div>}
               <div><div className="rec-rn">{it.title}</div><div className="rec-rs">{it.subtitle}{it.year ? ` · ${it.year}` : ''}</div></div></div>))}
             {q.trim().length >= 2 && results.length === 0 && searchErr && (
-              <div className="rec-empty space-y-3">
-                <div>{searchErr}</div>
-                {type === 'SONG' && searchErr.toLowerCase().includes('spotify') && (
-                  <SpotifySignInButton callbackUrl="/recommendations" label="Connect Spotify" className="rec-go" />
-                )}
-              </div>
+              <div className="rec-empty">{searchErr}</div>
             )}
           </div>
         </>)}
@@ -270,8 +257,7 @@ export default function RecommendationsClient() {
           <button className="rec-cta" onClick={() => setAdding(true)}>+ Add your pick</button>
         </div>
 
-        {type === 'SONG' && (
-          {(loading ? <p className="rec-empty">Loading…</p> : (<>
+        {loading ? <p className="rec-empty">Loading…</p> : (<>
           <div className="rec-sec"><b>Pole position</b><span>top 3 by net votes</span></div>
           {top.length === 0 ? <p className="rec-empty">No {kind}s on the board yet — be the first.</p> : (
             <div className="rec-pole">{order.map((idx) => { const r = top[idx]; if (!r) return <div key={idx} />; const pos = idx + 1;
@@ -303,7 +289,7 @@ export default function RecommendationsClient() {
             <button className="rec-add" disabled={mine.length >= 3} onClick={() => setAdding(true)}>+ Add a {kind}</button>
             {mine.length >= 3 && <span className="rec-cap">3/3 — remove one to swap</span>}
           </div>
-        </>))}
+        </>)}
       </div>
 
       {adding && <AddModal type={type} onClose={() => setAdding(false)} onAdded={(r) => setItems((xs) => [...xs, r])} />}
@@ -342,11 +328,6 @@ export default function RecommendationsClient() {
         .rec-toggle{display:flex;gap:8px}
         .rec-tg{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8a8a82;border:1px solid rgba(236,233,225,.16);background:none;border-radius:22px;padding:9px 16px;cursor:pointer;transition:.2s}
         .rec-tg:hover{color:#ece9e1}.rec-tg.on{color:#0a0a0a;background:#ece9e1;border-color:#ece9e1}
-        .rec-soon{margin:18px 0 10px;border:1px solid rgba(236,233,225,.12);background:linear-gradient(180deg, rgba(236,233,225,.04), rgba(10,10,10,.2));border-radius:16px;padding:26px 22px;position:relative;overflow:hidden}
-        .rec-soon:before{content:'';position:absolute;inset:auto -40px -60px auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle, rgba(158,200,255,.18), transparent 65%);pointer-events:none}
-        .rec-sooneyebrow{display:flex;align-items:center;gap:10px;font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8a8a82}
-        .rec-soon h2{margin:12px 0 10px;font-family:var(--font-pixel),monospace;font-size:clamp(2.2rem,4vw,3.6rem);line-height:.92;color:#ece9e1}
-        .rec-soon p{max-width:720px;color:#a7a79e;line-height:1.8;font-size:14px}
         .rec-sec{font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8a8a82;display:flex;align-items:baseline;gap:10px;margin:34px 0 16px;border-bottom:1px solid rgba(236,233,225,.1);padding-bottom:10px}
         .rec-sec b{color:#ece9e1;font-weight:500;font-family:var(--font-grotesk),sans-serif;font-size:18px;letter-spacing:0;text-transform:none}
         .rec-empty{font-family:var(--font-mono),monospace;font-size:11px;color:#55554f;letter-spacing:.04em;padding:8px 0}
