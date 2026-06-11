@@ -147,9 +147,9 @@ export default function HeroPassAgent() {
 
       <style jsx>{`
         .hpa-scene{perspective:1400px;display:flex;justify-content:center;align-items:center;width:100%}
-        .hpa-card{position:relative;width:330px;max-width:88vw;height:500px;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
-        .hpa-card.flip{transform:rotateY(180deg)!important}
-        .hpa-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;overflow:hidden}
+        .hpa-card{position:relative;width:330px;max-width:88vw;height:500px;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+        .hpa-card.flip{transform:rotateY(180deg)!important;-webkit-transform:rotateY(180deg)!important}
+        .hpa-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;overflow:hidden}
         .hpa-front{background:linear-gradient(160deg,#1a1a1e,#0e0e11 55%,#08080a);border:1px solid rgba(236,233,225,.16);box-shadow:0 44px 90px -34px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.07)}
         .hpa-foil{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#7d7d75,#ece9e1,#9aa0a6,#ece9e1,#7d7d75);opacity:.75}
         .hpa-glare{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;background:radial-gradient(320px 320px at var(--gx,30%) var(--gy,20%),rgba(255,255,255,.3),transparent 60%);pointer-events:none}
