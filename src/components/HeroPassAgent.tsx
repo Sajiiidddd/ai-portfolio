@@ -147,6 +147,10 @@ export default function HeroPassAgent() {
 
       <style jsx>{`
         .hpa-scene{perspective:1400px;display:flex;justify-content:center;align-items:center;width:100%}
+        .hpa-front{pointer-events:auto}
+        .hpa-card.flip .hpa-front{pointer-events:none}
+        .hpa-back{pointer-events:none}
+        .hpa-card.flip .hpa-back{pointer-events:auto}
         .hpa-card{position:relative;width:330px;max-width:88vw;height:500px;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
         .hpa-card.flip{transform:rotateY(180deg)!important;-webkit-transform:rotateY(180deg)!important}
         .hpa-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;overflow:hidden}
