@@ -1,14 +1,154 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import { pixel, mono, grotesk } from "@/app/fonts";
 
-type Tier = { key: string; label: string; items: [string, string][] };
-const tiers: Tier[] = [
-  { key: "adv", label: "Advanced", items: [["Python", "python.svg"], ["TensorFlow", "tensorflow.svg"], ["PyTorch", "pytorch.svg"], ["HuggingFace", "huggingface.svg"], ["Keras", "Keras.svg"], ["OpenCV", "opencv.svg"], ["NumPy", "numpy.svg"], ["Scikit-learn", "scikit-learn.svg"], ["Matplotlib", "matplotlib.svg"], ["MySQL", "mysql.svg"], ["PostgreSQL", "postgres.svg"], ["Pandas", "pandas.svg"], ["NLTK", "https://www.google.com/s2/favicons?domain=nltk.org&sz=64"], ["XGBoost", "https://www.google.com/s2/favicons?domain=xgboost.ai&sz=64"], ["Sentence-BERT", "https://www.google.com/s2/favicons?domain=sbert.net&sz=64"]] },
-  { key: "int", label: "Intermediate", items: [["C++", "c++.svg"], ["Django", "django.svg"], ["Google Cloud", "gcp.svg"], ["Git", "git.svg"], ["FastAPI", "fastapi.svg"], ["Node.js", "Node.js.svg"], ["MongoDB", "mongodb.svg"], ["HDFS", "hdfs.svg"], ["TypeScript", "https://www.google.com/s2/favicons?domain=typescriptlang.org&sz=64"], ["JavaScript", "javascript.svg"], ["React", "https://www.google.com/s2/favicons?domain=react.dev&sz=64"], ["Tailwind CSS", "https://www.google.com/s2/favicons?domain=tailwindcss.com&sz=64"], ["Java", "https://www.google.com/s2/favicons?domain=java.com&sz=64"], ["C", "c-programming.svg"], ["Flask", "https://www.google.com/s2/favicons?domain=flask.palletsprojects.com&sz=64"], ["Gradio", "https://www.google.com/s2/favicons?domain=gradio.app&sz=64"], ["ARIMA", "https://www.google.com/s2/favicons?domain=statsmodels.org&sz=64"]] },
-  { key: "rok", label: "Rookie", items: [["R", "r-project.svg"], ["Next.js", "next.js.svg"], ["HTML5", "html-5.svg"], ["CSS", "css.svg"]] },
-  { key: "tools", label: "Tools & Platforms", items: [["Docker", "https://www.google.com/s2/favicons?domain=docker.com&sz=64"], ["AWS ECR", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"], ["MCP", "pat:mcp"], ["Zendesk AI", "https://www.google.com/s2/favicons?domain=zendesk.com&sz=64"], ["Slack API", "https://www.google.com/s2/favicons?domain=slack.com&sz=64"], ["Claude", "https://www.google.com/s2/favicons?domain=claude.ai&sz=64"], ["OpenAI", "https://www.google.com/s2/favicons?domain=openai.com&sz=64"], ["DeBERTa", "pat:deberta"], ["RoBERTa", "pat:roberta"], ["ETL", "pat:etl"], ["Kubernetes · EKS", "https://www.google.com/s2/favicons?domain=kubernetes.io&sz=64"], ["Argo CD", "https://www.google.com/s2/favicons?domain=argoproj.github.io&sz=64"], ["AWS Bedrock", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"], ["Azure AI", "https://www.google.com/s2/favicons?domain=azure.microsoft.com&sz=64"], ["Jira", "https://www.google.com/s2/favicons?domain=atlassian.com&sz=64"], ["Postman", "https://www.google.com/s2/favicons?domain=postman.com&sz=64"]] },
+type Group = { key: string; label: string; items: [string, string][] };
+
+// ── Capability groups (replaces the Advanced/Intermediate/Rookie ladder) ──
+// icon value is one of: "name.svg" (local /public/skills) · "https://…" (favicon) · "pat:key" (pixel motif)
+const groups: Group[] = [
+  {
+    key: "rag",
+    label: "Retrieval & RAG",
+    items: [
+      ["GraphRAG", "pat:graph"],
+      ["Hybrid RAG", "pat:layers"],
+      ["Reciprocal Rank Fusion", "pat:rrf"],
+      ["FAISS", "pat:index"],
+      ["rank-bm25 / BM25", "pat:rank"],
+      ["NetworkX", "https://www.google.com/s2/favicons?domain=networkx.org&sz=64"],
+      ["Sentence-BERT", "https://www.google.com/s2/favicons?domain=sbert.net&sz=64"],
+      ["Titan v2 Embeddings", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"],
+      ["Vector Search", "pat:vector"],
+    ],
+  },
+  {
+    key: "llm",
+    label: "LLM / GenAI",
+    items: [
+      ["Claude (Anthropic)", "https://www.google.com/s2/favicons?domain=claude.ai&sz=64"],
+      ["OpenAI API", "https://www.google.com/s2/favicons?domain=openai.com&sz=64"],
+      ["AWS Bedrock", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"],
+      ["MCP", "pat:mcp"],
+      ["Prompt Engineering", "pat:prompt"],
+      ["Prompt Caching", "pat:cache"],
+      ["SSE / Streaming", "pat:stream"],
+    ],
+  },
+  {
+    key: "ml",
+    label: "ML / Deep Learning",
+    items: [
+      ["PyTorch", "pytorch.svg"],
+      ["TensorFlow", "tensorflow.svg"],
+      ["Keras", "Keras.svg"],
+      ["HuggingFace", "huggingface.svg"],
+      ["Transformers", "pat:attn"],
+      ["CNN", "pat:cnn"],
+      ["RNN", "pat:rnn"],
+      ["Reinforcement Learning (basics)", "pat:rl"],
+      ["Scikit-learn", "scikit-learn.svg"],
+      ["XGBoost", "https://www.google.com/s2/favicons?domain=xgboost.ai&sz=64"],
+      ["OpenCV", "opencv.svg"],
+      ["NLTK", "https://www.google.com/s2/favicons?domain=nltk.org&sz=64"],
+      ["DeBERTa", "pat:deberta"],
+      ["RoBERTa", "pat:roberta"],
+      ["ARIMA", "https://www.google.com/s2/favicons?domain=statsmodels.org&sz=64"],
+      ["NumPy", "numpy.svg"],
+      ["Pandas", "pandas.svg"],
+      ["Matplotlib", "matplotlib.svg"],
+      ["Optuna", "https://www.google.com/s2/favicons?domain=optuna.org&sz=64"],
+    ],
+  },
+  {
+    key: "api",
+    label: "Backend & APIs",
+    items: [
+      ["FastAPI", "fastapi.svg"],
+      ["Flask", "https://www.google.com/s2/favicons?domain=flask.palletsprojects.com&sz=64"],
+      ["Django", "django.svg"],
+      ["Node.js", "Node.js.svg"],
+      ["Express.js", "https://www.google.com/s2/favicons?domain=expressjs.com&sz=64"],
+      ["Socket.IO", "https://www.google.com/s2/favicons?domain=socket.io&sz=64"],
+      ["Zendesk REST + ZAF", "https://www.google.com/s2/favicons?domain=zendesk.com&sz=64"],
+      ["Slack API", "https://www.google.com/s2/favicons?domain=slack.com&sz=64"],
+      ["JWT SSO", "https://www.google.com/s2/favicons?domain=jwt.io&sz=64"],
+      ["Jira", "https://www.google.com/s2/favicons?domain=atlassian.com&sz=64"],
+      ["Postman", "https://www.google.com/s2/favicons?domain=postman.com&sz=64"],
+    ],
+  },
+  {
+    key: "fe",
+    label: "Frontend",
+    items: [
+      ["React", "https://www.google.com/s2/favicons?domain=react.dev&sz=64"],
+      ["Next.js", "next.js.svg"],
+      ["Tailwind CSS", "https://www.google.com/s2/favicons?domain=tailwindcss.com&sz=64"],
+      ["HTML5", "html-5.svg"],
+      ["CSS", "css.svg"],
+      ["Gradio", "https://www.google.com/s2/favicons?domain=gradio.app&sz=64"],
+      ["Mermaid.js", "https://www.google.com/s2/favicons?domain=mermaid.js.org&sz=64"],
+    ],
+  },
+  {
+    key: "data",
+    label: "Data & Databases",
+    items: [
+      ["PostgreSQL", "postgres.svg"],
+      ["pg_cron", "pat:cron"],
+      ["MySQL", "mysql.svg"],
+      ["MongoDB", "mongodb.svg"],
+      ["HDFS", "hdfs.svg"],
+      ["ETL", "pat:etl"],
+    ],
+  },
+  {
+    key: "infra",
+    label: "Cloud, DevOps & Security",
+    items: [
+      ["Docker", "https://www.google.com/s2/favicons?domain=docker.com&sz=64"],
+      ["Docker Compose", "https://www.google.com/s2/favicons?domain=docker.com&sz=64"],
+      ["AWS ECR", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"],
+      ["Kubernetes (EKS)", "https://www.google.com/s2/favicons?domain=kubernetes.io&sz=64"],
+      ["Argo CD", "https://www.google.com/s2/favicons?domain=argoproj.github.io&sz=64"],
+      ["kubectl", "https://www.google.com/s2/favicons?domain=kubernetes.io&sz=64"],
+      ["Azure AI", "https://www.google.com/s2/favicons?domain=azure.microsoft.com&sz=64"],
+      ["Google Cloud", "gcp.svg"],
+      ["Git / CI-CD", "git.svg"],
+      ["Linux", "https://www.google.com/s2/favicons?domain=kernel.org&sz=64"],
+      ["Row-Level Security", "pat:lock"],
+      ["helmet (CSP/HSTS)", "pat:helmet"],
+      ["HMAC", "pat:hmac"],
+      ["DOMPurify", "pat:filter"],
+      ["CORS allowlist", "pat:allow"],
+      ["SHA-256 integrity", "pat:hash"],
+    ],
+  },
+  {
+    key: "lang",
+    label: "Languages",
+    items: [
+      ["Python", "python.svg"],
+      ["TypeScript", "https://www.google.com/s2/favicons?domain=typescriptlang.org&sz=64"],
+      ["JavaScript", "javascript.svg"],
+      ["SQL", "pat:db"],
+      ["Java", "https://www.google.com/s2/favicons?domain=java.com&sz=64"],
+      ["C++", "c++.svg"],
+      ["C", "c-programming.svg"],
+      ["R", "r-project.svg"],
+    ],
+  },
+];
+
+// ── Honest "learning, not yet shipped" row — kept separate from real skills ──
+const exploring: [string, string][] = [
+  ["RAGAS", "https://www.google.com/s2/favicons?domain=ragas.io&sz=64"],
+  ["Langfuse", "https://www.google.com/s2/favicons?domain=langfuse.com&sz=64"],
+  ["pgvector", "postgres.svg"],
+  ["LangGraph", "https://www.google.com/s2/favicons?domain=langchain.com&sz=64"],
+  ["Reranker (Cross-Encoder)", "pat:rank"],
+  ["Terraform", "https://www.google.com/s2/favicons?domain=terraform.io&sz=64"],
+  ["Helm", "https://www.google.com/s2/favicons?domain=helm.sh&sz=64"],
 ];
 
 type Cert = { t: string; i: string; y: string; img?: string; drive?: string; url: string };
@@ -36,14 +176,42 @@ function previewSrc(c: Cert): string | null {
   if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
   return c.img || null;
 }
-
 const SKILLS = "/skills/";
 
+// ── Pixel motifs. Each pattern is rows of "1"/"0"; every row in a key MUST be
+//    the same length (PixGlyph derives the viewBox from pat[0].length). ──
 const PATS: Record<string, string[]> = {
+  // existing
   mcp: ["0100010", "0100010", "1111111", "1111111", "0111110", "0001000", "0001000"],
   deberta: ["111111111", "000000000", "011111110", "000000000", "001111100"],
   roberta: ["111111111", "000000000", "111101111", "000000000", "111111111"],
   etl: ["111111111", "011111110", "001111100", "000111000", "000010000", "000010000"],
+  // retrieval & rag
+  graph: ["10000001", "11000011", "00100100", "00011000", "00100100", "11000011", "10000001"],
+  layers: ["111111111", "000000000", "111111111", "000000000", "111111111"],
+  rrf: ["100000001", "010000010", "001000100", "000111000", "000111000", "000010000", "000010000"],
+  index: ["1010101", "0101010", "1010101", "0101010", "1010101"],
+  rank: ["100000", "110000", "111000", "111100", "111110", "111111"],
+  vector: ["000000010", "000000110", "111111110", "000000110", "000000010"],
+  // llm / genai
+  prompt: ["110000", "011000", "001100", "011000", "110000", "000000", "111111"],
+  cache: ["1111111", "1000001", "1011101", "1010101", "1011101", "1000001", "1111111"],
+  stream: ["110110110", "000000000", "011011011", "000000000", "110110110"],
+  // ml / deep learning
+  attn: ["10101", "01110", "11111", "01110", "10101"],
+  cnn: ["11100000", "11100000", "11100000", "00000000", "00000111", "00000111", "00000111"],
+  rnn: ["0111110", "1000001", "1011001", "1010101", "1001101", "1000001", "0111110"],
+  rl: ["0011100", "0100010", "1001001", "1010101", "1001001", "0100010", "0011100"],
+  // data
+  cron: ["0111110", "1001001", "1001001", "1000101", "1000011", "1000001", "0111110"],
+  db: ["0111110", "1111111", "1000001", "1111111", "1000001", "1111111", "0111110"],
+  // security cluster
+  lock: ["0011100", "0100010", "0100010", "1111111", "1101011", "1101011", "1111111"],
+  helmet: ["0011100", "0111110", "1111111", "1111111", "0000000", "1111111"],
+  hmac: ["0011100", "0100010", "0100010", "0011100", "0001000", "0001100", "0001000"],
+  filter: ["1111111", "0111110", "0011100", "0001000", "0001000", "0001000"],
+  allow: ["0000001", "0000011", "0000110", "1001100", "1111000", "0110000", "0010000"],
+  hash: ["0100100", "1111111", "0100100", "0100100", "1111111", "0100100"],
 };
 
 const PixGlyph = ({ pat }: { pat: string[] }) => (
@@ -52,15 +220,23 @@ const PixGlyph = ({ pat }: { pat: string[] }) => (
   </svg>
 );
 
+function SkillTile({ n, f }: { n: string; f: string }) {
+  return f.startsWith("pat:") ? (
+    <PixGlyph pat={PATS[f.slice(4)]} />
+  ) : (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={f.startsWith("http") ? f : SKILLS + f} alt={n} />
+  );
+}
+
 export default function ToolkitPage() {
   const [activeCert, setActiveCert] = useState(0);
   const dotRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const clockRef = useRef<HTMLSpanElement | null>(null);
-
   const hot = () => ringRef.current?.classList.add("hot");
   const cold = () => ringRef.current?.classList.remove("hot");
-
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
   useEffect(() => {
     let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my, raf = 0;
     const move = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; if (dotRef.current) dotRef.current.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`; };
@@ -70,13 +246,11 @@ export default function ToolkitPage() {
     tick(); const iv = setInterval(tick, 1000);
     return () => { removeEventListener("mousemove", move); cancelAnimationFrame(raf); clearInterval(iv); };
   }, []);
-
   return (
     <main className={`${pixel.variable} ${mono.variable} ${grotesk.variable} root`}>
       <div className="vig" />
       <div ref={dotRef} className="dot" />
       <div ref={ringRef} className="ring" />
-
       <nav>
         <a href="/" className="mono l" onMouseEnter={hot} onMouseLeave={cold}><span>Sajid Tamboli</span><span className="dim">AI / ML Engineer</span></a>
         <div className="links mono">
@@ -88,36 +262,39 @@ export default function ToolkitPage() {
         </div>
         <div className="clock mono"><span className="dim">Pune, IN</span><br /><span ref={clockRef}>--:--:--</span></div>
       </nav>
-
       <div className="wrap">
         <header>
           <div className="eyebrow"><span className="pulse" />Skills &amp; Credentials</div>
           <h1>TOOLKIT</h1>
           <p className="lede">The stack I build production intelligence with — and the credentials that back it. Hover a skill to bring it to life; pick a certificate to verify it at the source.</p>
         </header>
-
-        <div className="sechead"><h2>Stack</h2><span className="r">44 tools · 4 tiers</span></div>
+        <div className="sechead"><h2>Stack</h2><span className="r">{total} tools · {groups.length} groups</span></div>
         <div className="skills">
-          {tiers.map((tr) => (
-            <div key={tr.key} className="tier">
-              <div className="tierhead"><span>{tr.label}</span><span>{tr.items.length} tools</span></div>
-              <div className={`grid ${tr.key}`}>
-                {tr.items.map(([n, f]) => (
+          {groups.map((g) => (
+            <div key={g.key} className="tier">
+              <div className="tierhead"><span>{g.label}</span><span>{g.items.length} tools</span></div>
+              <div className="grid">
+                {g.items.map(([n, f]) => (
                   <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
-                    {f.startsWith("pat:") ? (
-                      <PixGlyph pat={PATS[f.slice(4)]} />
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={f.startsWith("http") ? f : SKILLS + f} alt={n} />
-                    )}
+                    <SkillTile n={n} f={f} />
                     <span>{n}</span>
                   </div>
                 ))}
               </div>
             </div>
           ))}
+          <div className="tier soon">
+            <div className="tierhead"><span>Currently Exploring</span><span>{exploring.length} · learning</span></div>
+            <div className="grid">
+              {exploring.map(([n, f]) => (
+                <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
+                  <SkillTile n={n} f={f} />
+                  <span>{n}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-
         <div className="sechead"><h2>Certifications</h2><span className="r">{certs.length.toString().padStart(2, "0")} credentials</span></div>
         <div className="certs">
           <div className="certlist">
@@ -139,7 +316,6 @@ export default function ToolkitPage() {
             <span className="yr">{certs[activeCert].y}</span>
           </div>
         </div>
-
         <footer>
           <div className="cta">
             <a className="ctabtn" href="mailto:tambolisajid65@gmail.com" onMouseEnter={hot} onMouseLeave={cold}>Let&apos;s build →</a>
@@ -151,9 +327,7 @@ export default function ToolkitPage() {
           </div>
           <div className="foot-base"><span>© 2026 Sajid Tamboli</span><span>Pune, India</span></div>
         </footer>
-
       </div>
-
       <style jsx>{`
         .root{position:relative;min-height:100vh;background:#0a0a0a;color:#ece9e1;font-family:var(--font-grotesk),sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none;
           --ink:#ece9e1;--muted:#8a8a82;--faint:#3a3a36;--line:rgba(236,233,225,.12);--pixel:var(--font-pixel),monospace;--mono:var(--font-mono),monospace;--ease:cubic-bezier(.16,1,.3,1)}
@@ -179,16 +353,17 @@ export default function ToolkitPage() {
         .tier{border:1px solid var(--line);border-bottom:0}
         .tier:last-of-type{border-bottom:1px solid var(--line)}
         .tierhead{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
-        .grid{display:grid}
-        .grid.adv{grid-template-columns:repeat(5,1fr)}
-        .grid.int{grid-template-columns:repeat(4,1fr)}
-        .grid.rok{grid-template-columns:repeat(5,1fr)}
-        .grid.tools{grid-template-columns:repeat(5,1fr)}
-        .skill{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:none;transition:background .3s}
+        /* one responsive grid for every group — no per-group CSS needed */
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+        /* "Currently exploring" reads as aspirational, not shipped */
+        .tier.soon .tierhead{color:#6f6f68}
+        .tier.soon .skill{opacity:.5}
+        .tier.soon .skill:hover{opacity:1}
+        .skill{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:none;transition:background .3s,opacity .3s}
         .skill:hover{background:rgba(236,233,225,.04)}
         .skill img{width:42px;height:42px;object-fit:contain;filter:grayscale(1) brightness(1.4);opacity:.65;transition:.35s}
         .skill:hover img{filter:none;opacity:1;transform:scale(1.12)}
-        .skill span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .3s}
+        .skill span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .3s;text-align:center;line-height:1.4}
         .skill:hover span{color:var(--ink)}
         .skill :global(.pix){height:30px;width:auto;display:block;color:#ece9e1;opacity:.55;transition:.35s}
         .skill:hover :global(.pix){opacity:1;transform:scale(1.12)}
@@ -214,7 +389,7 @@ export default function ToolkitPage() {
         .footnav{position:relative;z-index:2}
         @media(max-width:860px){
           nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}
-          .grid.adv,.grid.int,.grid.rok,.grid.tools{grid-template-columns:repeat(3,1fr)}
+          .grid{grid-template-columns:repeat(2,1fr)}
           .certs{grid-template-columns:1fr}.certimg{height:300px;border-left:0;border-top:1px solid var(--line)}
           .root{cursor:auto}.dot,.ring{display:none}
         }
