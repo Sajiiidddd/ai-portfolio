@@ -102,6 +102,7 @@ export default function ArticleShell({ children }: { children: React.ReactNode }
         .as-col .prose h2::before{content:counter(sec,decimal-leading-zero) "  ·  ";color:#8a8a82}
         .as-col .prose h3{font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:#b3b3a9;margin:2.6rem 0 .9rem}
         .as-col .prose p{font-size:15px;line-height:1.9}
+        .as-col .prose img{display:block;max-width:min(460px,100%);height:auto;margin:24px auto;border-radius:8px}
         .as-foot{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 34px}
         .as-foot footer{padding:70px 0 26px;border-top:1px solid rgba(236,233,225,.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--font-mono),monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#3a3a36}
         .as-wink{font-family:var(--font-grotesk),sans-serif;font-style:italic;font-size:13px;color:#8a8a82;text-transform:none;letter-spacing:0}
