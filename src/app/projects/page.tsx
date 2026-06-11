@@ -291,6 +291,7 @@ export default function ProjectsPage() {
           <a href="/blogs" onMouseEnter={hot} onMouseLeave={cold}>Writing</a>
           <a href="/toolkit" onMouseEnter={hot} onMouseLeave={cold}>Toolkit</a>
           <a href="/contact" onMouseEnter={hot} onMouseLeave={cold}>Contact</a>
+          <a href="/recommendations" onMouseEnter={hot} onMouseLeave={cold}>Recs</a>
         </div>
         <div className="clock mono"><span className="dim">Pune, IN</span><br /><span ref={clockRef}>--:--:--</span></div>
       </nav>
