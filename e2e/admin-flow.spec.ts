@@ -12,6 +12,7 @@ test.describe('admin publishing', () => {
     await expect(page).toHaveURL(/\/admin$/);
 
     const title = `E2E Post ${Date.now()}`;
+    await page.getByRole('button', { name: /^posts$/i }).click();
     await page.getByRole('button', { name: /new post/i }).click();
     await page.getByPlaceholder(/post title/i).fill(title);
     await page.getByPlaceholder(/write in markdown/i).fill('# Hello\n\n## Section\n\nBody text for the e2e post.');
