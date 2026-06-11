@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
+      DIRECT_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
       IDENTITY_SECRET: ci-dummy-identity-secret
       NOTIFY_SECRET: ci-dummy-notify-secret
       NEXT_PUBLIC_BASE_URL: https://example.com
@@ -44,6 +45,7 @@ jobs:
           --health-retries 5
     env:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
+      DIRECT_URL: postgresql://ci:ci@localhost:5432/ci?schema=public
       IDENTITY_SECRET: ci-e2e-identity-secret
       NOTIFY_SECRET: ci-e2e-notify-secret
       ADMIN_PASSWORD: ci-e2e-admin-password
