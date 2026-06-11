@@ -436,7 +436,7 @@ export default function ProjectsPage() {
         .plink{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#0a0a0a;background:var(--ink);border-radius:4px;padding:11px 18px;cursor:none;transition:opacity .3s;text-decoration:none}
         .plink.ghost{background:none;color:var(--ink);border:1px solid var(--line)}.plink:hover{opacity:.82}
         @media(max-width:860px){
-          nav{padding:14px 18px}nav .links{display:none}.wrap{padding:0 18px}.preview{display:none}
+          nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}.preview{display:none}
           .row{grid-template-columns:30px 1fr}.row .meta{grid-column:2;text-align:left;margin-top:6px}.row .view{display:none}
           .pbody{padding:26px 22px 70px}.cta{flex-direction:column;align-items:flex-start}
           .root{cursor:auto}.dot,.ring{display:none}
