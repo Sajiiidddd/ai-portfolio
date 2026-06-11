@@ -14,12 +14,18 @@ const tiers: Tier[] = [
 type Cert = { t: string; i: string; y: string; img?: string; drive?: string; url: string };
 const certs: Cert[] = [
   { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", drive: "1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1", url: "https://drive.google.com/file/d/1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1/view?usp=sharing" },
-  { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", drive: "1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
+  { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", drive: "1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl", img: "/images/TML.jpg", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
   { t: "MCP Deep Researcher Copyright", i: "Copyright Office, India", y: "2025", drive: "14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc", url: "https://drive.google.com/file/d/14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc/view?usp=drive_link" },
-  { t: "C for Everyone: Structured Programming", i: "Coursera · UC Santa Cruz", y: "2023", drive: "PASTE_DRIVE_ID", url: "https://www.coursera.org/account/accomplishments/verify/FH42HNHEG9XG" },
-  { t: "C++ For C Programmers, Part A", i: "Coursera · UC Santa Cruz", y: "2023", drive: "PASTE_DRIVE_ID", url: "https://www.coursera.org/account/accomplishments/verify/5TZTB3DGD9RC" },
-  { t: "J.P. Morgan Software Engineering", i: "Forage Virtual Experience", y: "2024", drive: "PASTE_DRIVE_ID", url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_ohdxxYhFy7YFhFY9n_1716726541894_completion_certificate.pdf" },
-  { t: "Google Cloud Computing Foundations", i: "Google Cloud · Credly", y: "2025", drive: "PASTE_DRIVE_ID", url: "https://www.credly.com/badges/a332adad-f3eb-4b8a-90ce-c137c6484548/public_url" },
+  { t: "Deep Learning and Reinforcement Learning", i: "Coursera · IBM", y: "2025", drive: "1jXUjGPs8zccSDMZCDIfoqkFNkjcHAslr", url: "https://www.coursera.org/account/accomplishments/verify/N506B67VIV83" },
+  { t: "Supervised Machine Learning: Regression", i: "Coursera · IBM", y: "2025", drive: "1T6JtJicErsP9QZc6kmV3W-d17GH2ytOQ", url: "https://www.coursera.org/account/accomplishments/verify/HGZHDMDX4OGF" },
+  { t: "Exploratory Data Analysis for Machine Learning", i: "Coursera · IBM", y: "2025", drive: "1CHUIftpuFs1jHoqlFxoG060WEi9GVbL4", url: "https://www.coursera.org/account/accomplishments/verify/KOBB1HMRI7Q9" },
+  { t: "Google Cloud Computing Foundations", i: "Google Cloud · Credly", y: "2025", drive: "128f-4Os-5VabSjMlxjTZ5RawDqvo02vT", url: "https://www.credly.com/badges/a332adad-f3eb-4b8a-90ce-c137c6484548/public_url" },
+  { t: "C++ For C Programmers, Part A", i: "Coursera · UC Santa Cruz", y: "2023", drive: "1uTaS3Vse1hN69_Na3kKOKRktamy872PV", url: "https://www.coursera.org/account/accomplishments/verify/5TZTB3DGD9RC" },
+  { t: "C++ Basics: Selection and Iteration", i: "Coursera · Codio", y: "2023", drive: "1G6LviNmqM_UIMQLuT9A1FAE3HdLQckpR", url: "https://www.coursera.org/account/accomplishments/verify/6ZHJS4ZLUHUW" },
+  { t: "C for Everyone, Part 2: Structured Programming", i: "Coursera · UC Santa Cruz", y: "2023", drive: "1N8zljaDYwyesAFYqMbwq8PLRX7BjO_Ix", url: "https://www.coursera.org/account/accomplishments/verify/FH42HNHEG9XG" },
+  { t: "C for Everyone, Part 1: Programming Fundamentals", i: "Coursera · UC Santa Cruz", y: "2023", drive: "1ADIdV_SUI4N5IWrfEwFDYnH1xVG5YplJ", url: "https://www.coursera.org/account/accomplishments/verify/NQ86N86RSF6N" },
+  { t: "J.P. Morgan Software Engineering", i: "Forage Virtual Experience", y: "2024", img: "/images/Forage%20Certificate.jpg", url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_ohdxxYhFy7YFhFY9n_1716726541894_completion_certificate.pdf" },
+  { t: "Google Cloud Skills Boost", i: "Google Cloud · Skills Boost", y: "2024–Present", img: "/images/gcsb1.png", url: "" },
 ];
 function driveId(u: string): string | null {
   const m = u.match(/\/file\/d\/([^/]+)/) || u.match(/[?&]id=([^&]+)/);
