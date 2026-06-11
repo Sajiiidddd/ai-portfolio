@@ -154,7 +154,7 @@ export default function WritingClient({ blogs }: { blogs: Blog[] }) {
         .wink{font-family:var(--font-grotesk),sans-serif;font-style:italic;font-size:13px;color:var(--muted);text-transform:none;letter-spacing:0}
         .footnav{position:relative;z-index:2}
         @media(max-width:860px){
-          nav{padding:14px 18px}nav .links{display:none}.wrap{padding:0 18px}
+          nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}
           .row{grid-template-columns:30px 1fr}.meta{grid-column:2;text-align:left;margin-top:6px}.view{display:none}
           .fread{display:none}
           .root{cursor:auto}.dot,.ring{display:none}
