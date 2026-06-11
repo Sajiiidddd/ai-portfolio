@@ -133,7 +133,7 @@ export default function ArticleShell({ children }: { children: React.ReactNode }
           .sp-i{opacity:1;transform:none;transition:none}
         }
         @media(max-width:860px){
-          .as-nav{padding:14px 18px}.as-links{display:none}
+          .as-nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}.as-links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}.as-clock{display:none}
           .as-col{padding:110px 18px 40px}.as-foot{padding:0 18px}
           .as-hud{display:none}
           .as-pn{grid-template-columns:1fr}
