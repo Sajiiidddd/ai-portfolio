@@ -720,7 +720,7 @@ export default function IndexPage() {
         .ab-plink:hover{opacity:.82}
 
         @media(max-width:900px){
-          .ab-nav{padding:14px 18px}.ab-navlinks{display:none}.ab-wrap{padding:0 18px}
+          .ab-nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}.ab-navlinks{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}.ab-clock{display:none}.ab-wrap{padding:0 18px}
           .ab-hero{grid-template-columns:1fr;gap:46px;padding-top:120px}.ab-stage{order:-1;min-height:430px}
           .ab-pass{width:300px;height:474px}
           .ab-stats{grid-template-columns:repeat(2,1fr)}.ab-now{flex-direction:column;gap:10px}.ab-postmeta{display:none}
