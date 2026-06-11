@@ -274,7 +274,7 @@ export default function ContactPage() {
         footer{padding:70px 0 30px;border-top:1px solid var(--line);margin-top:60px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
         .footnav{position:relative;z-index:2}
         @media(max-width:900px){
-          nav{padding:14px 18px}nav .links{display:none}.wrap{padding:0 18px}
+          nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}
           .layout{grid-template-columns:1fr}.main{padding:34px 0 40px}.side{border-left:0;border-top:1px solid var(--line);padding:34px 0}
           .intents{grid-template-columns:1fr}.fields{grid-template-columns:1fr}
           .root{cursor:auto}.dot,.ring{display:none}
