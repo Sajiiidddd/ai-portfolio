@@ -13,5 +13,5 @@ test('open a post, comment, and like a comment', async ({ page }) => {
   await expect(textarea).toBeVisible();
   await textarea.fill(body);
   await page.getByRole('button', { name: /post/i }).first().click();
-  await expect(page.getByText(body)).toBeVisible();
+  await expect(page.getByText(body).first()).toBeVisible();
 });
