@@ -57,7 +57,7 @@ function AddModal({ type, onClose, onAdded }: { type: Kind; onClose: () => void;
     const t = setTimeout(async () => {
       if (q.trim().length < 2) { setResults([]); return; }
       try {
-        const r = await fetch(`/api/search/${type === 'MOVIE' ? 'tmdb' : 'spotify'}?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`/api/search/${type === 'MOVIE' ? 'tmdb' : 'itunes'}?q=${encodeURIComponent(q)}`);
         const d = await r.json();
         if (Array.isArray(d)) { setResults(d); setSearchErr(d.length ? '' : 'No matches.'); }
         else { setResults([]); setSearchErr(d?.detail || d?.error || 'Search unavailable.'); }
@@ -127,7 +127,7 @@ function EditModal({ rec, type, onClose, onSaved }: { rec: Rec; type: Kind; onCl
     const t = setTimeout(async () => {
       if (q.trim().length < 2) { setResults([]); setSearchErr(''); return; }
       try {
-        const r = await fetch(`/api/search/${type === 'MOVIE' ? 'tmdb' : 'spotify'}?q=${encodeURIComponent(q)}`);
+        const r = await fetch(`/api/search/${type === 'MOVIE' ? 'tmdb' : 'itunes'}?q=${encodeURIComponent(q)}`);
         const d = await r.json();
         if (Array.isArray(d)) { setResults(d); setSearchErr(d.length ? '' : 'No matches.'); }
         else { setResults([]); setSearchErr(d?.detail || d?.error || 'Search unavailable.'); }
@@ -267,18 +267,11 @@ export default function RecommendationsClient() {
             <button className={`rec-tg${type === 'MOVIE' ? ' on' : ''}`} onClick={() => setType('MOVIE')}><MovieMotif />Movies</button>
             <button className={`rec-tg${type === 'SONG' ? ' on' : ''}`} onClick={() => setType('SONG')}><SongMotif />Songs</button>
           </div>
-          <button className="rec-cta" disabled={type === 'SONG'} onClick={() => { if (type !== 'SONG') setAdding(true); }}>+ Add your pick</button>
+          <button className="rec-cta" onClick={() => setAdding(true)}>+ Add your pick</button>
         </div>
 
         {type === 'SONG' && (
-          <div className="rec-soon">
-            <div className="rec-sooneyebrow"><span className="rec-pulse" />Songs</div>
-            <h2>Coming Soon</h2>
-            <p>The songs lane is paused for now. I’m keeping the same visual language and atmosphere, but the entry flow is intentionally hidden until the music experience is ready.</p>
-          </div>
-        )}
-
-        {type === 'SONG' ? null : (loading ? <p className="rec-empty">Loading…</p> : (<>
+          {(loading ? <p className="rec-empty">Loading…</p> : (<>
           <div className="rec-sec"><b>Pole position</b><span>top 3 by net votes</span></div>
           {top.length === 0 ? <p className="rec-empty">No {kind}s on the board yet — be the first.</p> : (
             <div className="rec-pole">{order.map((idx) => { const r = top[idx]; if (!r) return <div key={idx} />; const pos = idx + 1;
