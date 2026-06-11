@@ -9,12 +9,13 @@ const KB: { k: string[]; src: string; a: string }[] = [
   { k: ['mcp', 'zendesk', 'protocol', 'guardrail'], src: 'projects/zendesk-mcp', a: "I built the Zendesk MCP that didn't exist — two open-source servers, 77+ tools, with guard-rails, 429-aware retries, bounded pagination, and a firewall against derailment. I also published MCP Deep Researcher (Springer · ICT4SD 2026)." },
   { k: ['patent', 'bom', 'tata', 'samiksha'], src: 'projects/bom-comparator', a: "My proudest ship is SAMIKSHA (patented) — an NLP BOM comparator at Tata Motors, live across 5 departments, cutting comparison from hours to 1–2 minutes at 100% accuracy." },
   { k: ['f1', 'formula', 'race', 'strategy'], src: 'projects/f1-strategy-os', a: "F1 Strategy OS is a 64-dim Transformer on 5 years of FastF1 telemetry, <45ms CPU inference, ~92% podium accuracy, with a Next.js dashboard." },
+  { k: ['education', 'degree', 'college', 'university', 'study', 'cgpa', 'btech'], src: 'about/education', a: "I hold a B.Tech in AI & Data Science with a Minor in Robotics from ADYPU, Pune — graduated May 2026, final CGPA 8.3 (Semester 8: 9.90). I also founded and taught a 150+ member AI/ML club." },
   { k: ['skill', 'stack', 'tech', 'tools'], src: 'toolkit', a: "Core stack: PyTorch, GraphRAG, MCP, FAISS, Docker, AWS, Postgres, Next.js. I care most about the plumbing around the model — reliability and guardrails." },
   { k: ['contact', 'reach', 'hire', 'github', 'resume', 'email'], src: 'contact', a: "Grab the résumé below, or find me as @Sajiiidddd on GitHub. Open to AI/ML roles and collaborations." },
   { k: ['who', 'about', 'jedi', 'force', 'yourself'], src: 'about', a: "I'm Sajid — strong with the Source, both the Force and open source. An AI/ML engineer in Pune who ships production intelligence and teaches it." },
 ];
 const SUGGEST = ['Working on now?', 'The MCP work', 'The patent?', 'Reach you?'];
-const GENERIC = "I only know about Sajid's work — try asking about his AppZen role, the Zendesk MCP, the Tata Motors patent, F1 Strategy OS, his stack, or how to reach him.";
+const GENERIC = "I only know about Sajid's work — try asking about his AppZen role, the Zendesk MCP, the Tata Motors patent, F1 Strategy OS, his education, his stack, or how to reach him.";
 
 function canned(q: string) {
   const t = q.toLowerCase();
@@ -34,7 +35,6 @@ export default function HeroPassAgent() {
   const orbRef = useRef<HTMLCanvasElement>(null);
   const greeted = useRef(false);
 
-  // cursor tilt on the front
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const c = cardRef.current; if (!c || flipped) return;
@@ -42,14 +42,13 @@ export default function HeroPassAgent() {
       const px = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
       const py = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
       if (Math.abs(px) > 1.7 || Math.abs(py) > 1.7) { c.style.transform = ''; return; }
-      c.style.transform = `rotateY(${px * 12}deg) rotateX(${-py * 12}deg)`;
+      c.style.transform = `rotateY(${px * 10}deg) rotateX(${-py * 10}deg)`;
       c.style.setProperty('--gx', `${50 + px * 30}%`); c.style.setProperty('--gy', `${40 + py * 30}%`);
     };
     addEventListener('mousemove', onMove);
     return () => removeEventListener('mousemove', onMove);
   }, [flipped]);
 
-  // orb
   useEffect(() => {
     const cv = orbRef.current; if (!cv) return;
     const ox = cv.getContext('2d')!; let t = 0, raf = 0;
@@ -92,7 +91,7 @@ export default function HeroPassAgent() {
   const flip = (on: boolean) => {
     const c = cardRef.current; if (c) c.style.transform = '';
     setFlipped(on);
-    if (on) { greet(); setTimeout(() => inputRef.current?.focus(), 520); }
+    if (on) { greet(); setTimeout(() => inputRef.current?.focus(), 480); }
   };
 
   const submit = () => { const v = input.trim(); setInput(''); if (v) ask(v); };
@@ -147,14 +146,10 @@ export default function HeroPassAgent() {
 
       <style jsx>{`
         .hpa-scene{perspective:1400px;display:flex;justify-content:center;align-items:center;width:100%}
-        .hpa-front{pointer-events:auto}
-        .hpa-card.flip .hpa-front{pointer-events:none}
-        .hpa-back{pointer-events:none}
-        .hpa-card.flip .hpa-back{pointer-events:auto}
-        .hpa-card{position:relative;width:330px;max-width:88vw;height:500px;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
-        .hpa-card.flip{transform:rotateY(180deg)!important;-webkit-transform:rotateY(180deg)!important}
-        .hpa-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;overflow:hidden}
-        .hpa-front{background:linear-gradient(160deg,#1a1a1e,#0e0e11 55%,#08080a);border:1px solid rgba(236,233,225,.16);box-shadow:0 44px 90px -34px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.07)}
+        .hpa-card{position:relative;width:330px;max-width:88vw;height:500px;transition:transform .25s cubic-bezier(.16,1,.3,1)}
+        .hpa-face{position:absolute;inset:0;border-radius:18px;overflow:hidden;transition:opacity .4s ease,transform .55s cubic-bezier(.16,1,.3,1)}
+        .hpa-front{background:linear-gradient(160deg,#1a1a1e,#0e0e11 55%,#08080a);border:1px solid rgba(236,233,225,.16);box-shadow:0 44px 90px -34px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.07);opacity:1;transform:none;pointer-events:auto;z-index:2}
+        .hpa-card.flip .hpa-front{opacity:0;transform:scale(1.03);pointer-events:none}
         .hpa-foil{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#7d7d75,#ece9e1,#9aa0a6,#ece9e1,#7d7d75);opacity:.75}
         .hpa-glare{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;background:radial-gradient(320px 320px at var(--gx,30%) var(--gy,20%),rgba(255,255,255,.3),transparent 60%);pointer-events:none}
         .hpa-pad{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;padding:18px 20px 16px}
@@ -169,7 +164,8 @@ export default function HeroPassAgent() {
         .hpa-ask{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-mono),monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#0a0a0a;background:#ece9e1;border:0;border-radius:7px;padding:11px;cursor:pointer;transition:.2s}
         .hpa-ask:hover{opacity:.85}
         .hpa-o{width:8px;height:8px;border-radius:50%;background:#9ec8ff;box-shadow:0 0 8px #9ec8ff}
-        .hpa-back{transform:rotateY(180deg);background:linear-gradient(170deg,#13151b,#0c0d11);border:1px solid rgba(236,233,225,.16);box-shadow:0 44px 90px -34px rgba(0,0,0,.9);display:flex;flex-direction:column}
+        .hpa-back{background:linear-gradient(170deg,#13151b,#0c0d11);border:1px solid rgba(236,233,225,.16);box-shadow:0 44px 90px -34px rgba(0,0,0,.9);display:flex;flex-direction:column;opacity:0;transform:scale(.97);pointer-events:none;z-index:1}
+        .hpa-card.flip .hpa-back{opacity:1;transform:none;pointer-events:auto;z-index:3}
         .hpa-ahead{display:flex;align-items:center;gap:11px;padding:14px 15px;border-bottom:1px solid rgba(236,233,225,.08)}
         .hpa-orb{width:34px;height:34px;flex:none}.hpa-orb canvas{width:34px;height:34px;display:block}
         .hpa-aid{display:flex;flex-direction:column;line-height:1}
