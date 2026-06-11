@@ -11,17 +11,27 @@ const tiers: Tier[] = [
   { key: "tools", label: "Tools & Platforms", items: [["Docker", "https://www.google.com/s2/favicons?domain=docker.com&sz=64"], ["AWS ECR", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"], ["MCP", "pat:mcp"], ["Zendesk AI", "https://www.google.com/s2/favicons?domain=zendesk.com&sz=64"], ["Slack API", "https://www.google.com/s2/favicons?domain=slack.com&sz=64"], ["Claude", "https://www.google.com/s2/favicons?domain=claude.ai&sz=64"], ["OpenAI", "https://www.google.com/s2/favicons?domain=openai.com&sz=64"], ["DeBERTa", "pat:deberta"], ["RoBERTa", "pat:roberta"], ["ETL", "pat:etl"], ["Kubernetes · EKS", "https://www.google.com/s2/favicons?domain=kubernetes.io&sz=64"], ["Argo CD", "https://www.google.com/s2/favicons?domain=argoproj.github.io&sz=64"], ["AWS Bedrock", "https://www.google.com/s2/favicons?domain=aws.amazon.com&sz=64"], ["Azure AI", "https://www.google.com/s2/favicons?domain=azure.microsoft.com&sz=64"], ["Jira", "https://www.google.com/s2/favicons?domain=atlassian.com&sz=64"], ["Postman", "https://www.google.com/s2/favicons?domain=postman.com&sz=64"]] },
 ];
 
-type Cert = { t: string; i: string; y: string; img: string; url: string };
+type Cert = { t: string; i: string; y: string; img?: string; drive?: string; url: string };
 const certs: Cert[] = [
-  { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", img: "", url: "https://drive.google.com/file/d/1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1/view?usp=sharing" },
-  { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", img: "/images/TML.jpg", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
-  { t: "MCP Deep Researcher Copyright", i: "Copyright Office, India", y: "2025", img: "", url: "https://drive.google.com/file/d/14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc/view?usp=drive_link" },
+  { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", drive: "1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1", url: "https://drive.google.com/file/d/1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1/view?usp=sharing" },
+  { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", drive: "1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl", img: "/images/TML.jpg", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
+  { t: "MCP Deep Researcher Copyright", i: "Copyright Office, India", y: "2025", drive: "14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc", url: "https://drive.google.com/file/d/14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc/view?usp=drive_link" },
   { t: "C for Everyone: Structured Programming", i: "Coursera · UC Santa Cruz", y: "2023", img: "/images/Coursera%20C.jpg", url: "https://www.coursera.org/account/accomplishments/verify/FH42HNHEG9XG" },
   { t: "C++ For C Programmers, Part A", i: "Coursera · UC Santa Cruz", y: "2023", img: "/images/Coursera%20C++.jpg", url: "https://www.coursera.org/account/accomplishments/verify/5TZTB3DGD9RC" },
   { t: "J.P. Morgan Software Engineering", i: "Forage Virtual Experience", y: "2024", img: "/images/Forage%20Certificate.jpg", url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_ohdxxYhFy7YFhFY9n_1716726541894_completion_certificate.pdf" },
   { t: "Google Cloud Computing Foundations", i: "Google Cloud · Credly", y: "2025", img: "/images/gcsb1.png", url: "https://www.credly.com/badges/a332adad-f3eb-4b8a-90ce-c137c6484548/public_url" },
   { t: "Google Cloud Skills Boost", i: "Google Cloud · Skills Boost", y: "2024–Present", img: "/images/gcsb1.png", url: "" },
 ];
+
+function driveId(u: string): string | null {
+  const m = u.match(/\/file\/d\/([^/]+)/) || u.match(/[?&]id=([^&]+)/);
+  return m ? m[1] : null;
+}
+function previewSrc(c: Cert): string | null {
+  const id = (c.drive && (driveId(c.drive) || c.drive)) || driveId(c.url || "");
+  if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1600`;
+  return c.img || null;
+}
 
 const SKILLS = "/skills/";
 
@@ -116,7 +126,12 @@ export default function ToolkitPage() {
           </div>
           <div className="certimg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={certs[activeCert].img} alt={certs[activeCert].t} />
+            {(() => {
+              const src = previewSrc(certs[activeCert]);
+              return src
+                ? <img src={src} alt={certs[activeCert].t} referrerPolicy="no-referrer" />
+                : <div className="certph">Verify ↗ at source</div>;
+            })()}
             <span className="yr">{certs[activeCert].y}</span>
           </div>
         </div>
@@ -183,7 +198,8 @@ export default function ToolkitPage() {
         .certrow .verify{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);opacity:0;white-space:nowrap;transition:.3s;border:1px solid var(--line);padding:7px 11px;border-radius:4px;text-decoration:none}
         .certrow.on .verify{opacity:1;color:var(--ink)}.certrow .verify:hover{background:var(--ink);color:#0a0a0a}
         .certimg{position:relative;border-left:1px solid var(--line);background:#0c0c0c;overflow:hidden;min-height:340px}
-        .certimg img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:opacity .4s}
+        .certimg img{width:100%;height:100%;object-fit:contain;padding:18px;filter:grayscale(1) contrast(1.05);transition:opacity .4s}
+        .certph{display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#55554f}
         .certimg .yr{position:absolute;top:14px;right:14px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:#fff;background:rgba(0,0,0,.55);padding:5px 10px;border-radius:3px}
         footer{padding:90px 0 30px;border-top:1px solid var(--line);margin-top:90px}
         .cta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
