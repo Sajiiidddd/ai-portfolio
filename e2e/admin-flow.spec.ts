@@ -28,10 +28,10 @@ test.describe('admin publishing', () => {
     await page.getByRole('button', { name: /update/i }).click();
     await expect(page.getByText(edited)).toBeVisible();
 
-    // delete
-    page.on('dialog', (d) => d.accept());
+    // delete (custom confirm modal: click the row's Delete, then confirm "Delete post")
     const row2 = page.locator('div', { hasText: edited }).first();
     await row2.getByRole('button', { name: /^delete$/i }).first().click();
+    await page.getByRole('button', { name: /delete post/i }).click();
     await expect(page.getByText(edited)).toHaveCount(0);
   });
 });
