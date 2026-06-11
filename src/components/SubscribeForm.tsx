@@ -56,30 +56,34 @@ export default function SubscribeForm() {
           {msg}
         </p>
       ) : (
-        <div className="flex flex-col sm:flex-row gap-3 max-w-xl">
-          <input
-            type="text" value={name} onChange={(e) => setName(e.target.value)}
-            placeholder="Name (optional)"
-            className="sm:w-[34%] bg-[#0c0c0c] border border-white/[0.12] rounded-[5px] px-3.5 py-3 text-sm text-[#ece9e1] placeholder-[#55554f] focus:border-white/50 focus:outline-none transition-colors"
-          />
-          <input
-            type="text" value={website} onChange={(e) => setWebsite(e.target.value)}
-            tabIndex={-1} autoComplete="off" aria-hidden="true" placeholder="Website"
-            style={{ position: 'absolute', left: '-9999px', height: 0, width: 0, opacity: 0 }}
-          />
-          <input
-            type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
-            onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
-            placeholder="you@email.com"
-            className="flex-1 bg-[#0c0c0c] border border-white/[0.12] rounded-[5px] px-3.5 py-3 text-sm text-[#ece9e1] placeholder-[#55554f] focus:border-white/50 focus:outline-none transition-colors"
-          />
-          <Turnstile onToken={setTsToken} />
-          <button
-            onClick={submit} disabled={status === 'loading' || !email.trim()} style={MONO}
-            className="text-[11px] tracking-[0.14em] uppercase px-5 py-3 rounded-[5px] bg-[#ece9e1] text-[#0a0a0a] hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed transition-all whitespace-nowrap"
-          >
-            {status === 'loading' ? 'Sending…' : 'Subscribe →'}
-          </button>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 max-w-2xl">
+            <input
+              type="text" value={name} onChange={(e) => setName(e.target.value)}
+              placeholder="Name (optional)"
+              className="w-full sm:w-[34%] bg-[#0c0c0c] border border-white/[0.12] rounded-[5px] px-3.5 py-3 text-sm text-[#ece9e1] placeholder-[#55554f] focus:border-white/50 focus:outline-none transition-colors"
+            />
+            <input
+              type="text" value={website} onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1} autoComplete="off" aria-hidden="true" placeholder="Website"
+              style={{ position: 'absolute', left: '-9999px', height: 0, width: 0, opacity: 0 }}
+            />
+            <input
+              type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
+              placeholder="you@email.com"
+              className="w-full sm:flex-1 bg-[#0c0c0c] border border-white/[0.12] rounded-[5px] px-3.5 py-3 text-sm text-[#ece9e1] placeholder-[#55554f] focus:border-white/50 focus:outline-none transition-colors"
+            />
+            <button
+              onClick={submit} disabled={status === 'loading' || !email.trim()} style={MONO}
+              className="text-[11px] tracking-[0.14em] uppercase px-5 py-3 rounded-[5px] bg-[#ece9e1] text-[#0a0a0a] hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+            >
+              {status === 'loading' ? 'Sending…' : 'Subscribe →'}
+            </button>
+          </div>
+          <div>
+            <Turnstile onToken={setTsToken} />
+          </div>
         </div>
       )}
       {status === 'error' && (
