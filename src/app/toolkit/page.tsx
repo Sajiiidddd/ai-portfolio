@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef, useState } from "react";
 import { pixel, mono, grotesk } from "@/app/fonts";
 
@@ -220,14 +221,7 @@ const PixGlyph = ({ pat }: { pat: string[] }) => (
   </svg>
 );
 
-function SkillTile({ n, f }: { n: string; f: string }) {
-  return f.startsWith("pat:") ? (
-    <PixGlyph pat={PATS[f.slice(4)]} />
-  ) : (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={f.startsWith("http") ? f : SKILLS + f} alt={n} />
-  );
-}
+const COLS = 5; // fixed grid width — filler cells complete the last row so borders always close
 
 export default function ToolkitPage() {
   const [activeCert, setActiveCert] = useState(0);
@@ -270,30 +264,44 @@ export default function ToolkitPage() {
         </header>
         <div className="sechead"><h2>Stack</h2><span className="r">{total} tools · {groups.length} groups</span></div>
         <div className="skills">
-          {groups.map((g) => (
-            <div key={g.key} className="tier">
-              <div className="tierhead"><span>{g.label}</span><span>{g.items.length} tools</span></div>
-              <div className="grid">
-                {g.items.map(([n, f]) => (
-                  <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
-                    <SkillTile n={n} f={f} />
-                    <span>{n}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          <div className="tier soon">
-            <div className="tierhead"><span>Currently Exploring</span><span>{exploring.length} · learning</span></div>
-            <div className="grid">
-              {exploring.map(([n, f]) => (
-                <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
-                  <SkillTile n={n} f={f} />
-                  <span>{n}</span>
+          {groups.map((g) => {
+            const pad = (COLS - (g.items.length % COLS)) % COLS;
+            return (
+              <div key={g.key} className="tier">
+                <div className="tierhead"><span>{g.label}</span><span>{g.items.length} tools</span></div>
+                <div className="grid">
+                  {g.items.map(([n, f]) => (
+                    <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
+                      {f.startsWith("pat:")
+                        ? <PixGlyph pat={PATS[f.slice(4)]} />
+                        : <img src={f.startsWith("http") ? f : SKILLS + f} alt={n} />}
+                      <span>{n}</span>
+                    </div>
+                  ))}
+                  {Array.from({ length: pad }).map((_, i) => (<div key={`f${i}`} className="skill filler" aria-hidden="true" />))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })}
+          {(() => {
+            const pad = (COLS - (exploring.length % COLS)) % COLS;
+            return (
+              <div className="tier soon">
+                <div className="tierhead"><span>Currently Exploring</span><span>{exploring.length} · learning</span></div>
+                <div className="grid">
+                  {exploring.map(([n, f]) => (
+                    <div key={n} className="skill" onMouseEnter={hot} onMouseLeave={cold}>
+                      {f.startsWith("pat:")
+                        ? <PixGlyph pat={PATS[f.slice(4)]} />
+                        : <img src={f.startsWith("http") ? f : SKILLS + f} alt={n} />}
+                      <span>{n}</span>
+                    </div>
+                  ))}
+                  {Array.from({ length: pad }).map((_, i) => (<div key={`f${i}`} className="skill filler" aria-hidden="true" />))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
         <div className="sechead"><h2>Certifications</h2><span className="r">{certs.length.toString().padStart(2, "0")} credentials</span></div>
         <div className="certs">
@@ -353,20 +361,23 @@ export default function ToolkitPage() {
         .tier{border:1px solid var(--line);border-bottom:0}
         .tier:last-of-type{border-bottom:1px solid var(--line)}
         .tierhead{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
-        /* one responsive grid for every group — no per-group CSS needed */
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+        /* fixed 5-wide grid (must match COLS); filler cells complete the last row so lines always close */
+        .grid{display:grid;grid-template-columns:repeat(5,1fr)}
         /* "Currently exploring" reads as aspirational, not shipped */
         .tier.soon .tierhead{color:#6f6f68}
         .tier.soon .skill{opacity:.5}
         .tier.soon .skill:hover{opacity:1}
         .skill{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px 12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);cursor:none;transition:background .3s,opacity .3s}
         .skill:hover{background:rgba(236,233,225,.04)}
-        .skill img{width:42px;height:42px;object-fit:contain;filter:grayscale(1) brightness(1.4);opacity:.65;transition:.35s}
-        .skill:hover img{filter:none;opacity:1;transform:scale(1.12)}
+        /* B/W by default, colour on hover or click */
+        .skill img{width:42px;height:42px;object-fit:contain;filter:grayscale(1) brightness(1.35);opacity:.6;transition:.35s}
+        .skill:hover img,.skill:active img,.skill:focus-within img{filter:none;opacity:1;transform:scale(1.12)}
         .skill span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .3s;text-align:center;line-height:1.4}
         .skill:hover span{color:var(--ink)}
         .skill :global(.pix){height:30px;width:auto;display:block;color:#ece9e1;opacity:.55;transition:.35s}
-        .skill:hover :global(.pix){opacity:1;transform:scale(1.12)}
+        .skill:hover :global(.pix),.skill:active :global(.pix){opacity:1;transform:scale(1.12)}
+        /* invisible cells that just hold the grid lines */
+        .skill.filler{pointer-events:none;background:none}
         .certs{display:grid;grid-template-columns:1fr 420px;border:1px solid var(--line)}
         .certlist{display:flex;flex-direction:column}
         .certrow{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:26px 24px;border-bottom:1px solid var(--line);cursor:none;transition:background .3s,opacity .3s;opacity:.5}
@@ -389,7 +400,7 @@ export default function ToolkitPage() {
         .footnav{position:relative;z-index:2}
         @media(max-width:860px){
           nav{padding:12px 18px;flex-wrap:wrap;gap:4px 14px}nav .links{display:flex;flex-wrap:wrap;gap:14px;width:100%;order:3}nav .clock{display:none}.wrap{padding:0 18px}
-          .grid{grid-template-columns:repeat(2,1fr)}
+          .grid{grid-template-columns:repeat(2,1fr)}.skill.filler{display:none}
           .certs{grid-template-columns:1fr}.certimg{height:300px;border-left:0;border-top:1px solid var(--line)}
           .root{cursor:auto}.dot,.ring{display:none}
         }
