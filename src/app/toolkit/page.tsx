@@ -154,7 +154,7 @@ const exploring: [string, string][] = [
 
 type Cert = { t: string; i: string; y: string; img?: string; drive?: string; url: string };
 const certs: Cert[] = [
-  { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", drive: "1yTRpe7PMqP2iGGm1BRpsO5CQp-i80vg1", url: "https://drive.google.com/file/d/1mtZQvOqRTL7e9Am7pJgK0fT6ZWBwbA9N/view?usp=sharing" },
+  { t: "Best Project Award", i: "Ajeenkya D Y Patil University", y: "2026", drive: "1mtZQvOqRTL7e9Am7pJgK0fT6ZWBwbA9N", url: "https://drive.google.com/file/d/1mtZQvOqRTL7e9Am7pJgK0fT6ZWBwbA9N/view?usp=sharing" },
   { t: "AI ML Deployment in ECM", i: "TATA Motors Ltd. (Internship)", y: "2026", drive: "1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl", img: "/images/TML.jpg", url: "https://drive.google.com/file/d/1YVi1W5QjhipCZYsePPAFIJOKVV_bsKIl/view?usp=drive_link" },
   { t: "MCP Deep Researcher Copyright", i: "Copyright Office, India", y: "2025", drive: "14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc", url: "https://drive.google.com/file/d/14X3GgGR-M2S9L_bZa6pvInhv9OtNQsUc/view?usp=drive_link" },
   { t: "Deep Learning and Reinforcement Learning", i: "Coursera · IBM", y: "2025", drive: "1jXUjGPs8zccSDMZCDIfoqkFNkjcHAslr", url: "https://www.coursera.org/account/accomplishments/verify/N506B67VIV83" },
